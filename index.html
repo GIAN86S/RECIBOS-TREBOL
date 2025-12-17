@@ -1,34 +1,35 @@
-```html
 <!DOCTYPE html>
 <html lang="es-BO">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Recibos | Verdes Olivos</title>
+    <title>RECIBO TRÉBOL | Sistema Profesional</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Variables de color - Verdes Olivos */
+        /* Variables de color - Trébol Profesional */
         :root {
-            --verde-olivo: #556B2F;
-            --verde-olivo-claro: #6B8E23;
-            --verde-olivo-suave: #9AB973;
-            --verde-olivo-palido: #C2D6A3;
-            --crema: #F5F5DC;
-            --crema-oscuro: #E8E4C9;
-            --oro: #D4AF37;
-            --oro-oscuro: #B8860B;
+            --verde-trebol: #228B22;
+            --verde-trebol-oscuro: #1A6B1A;
+            --verde-trebol-claro: #32CD32;
+            --verde-trebol-suave: #90EE90;
+            --verde-trebol-palido: #E8F5E8;
+            --oro: #FFD700;
+            --oro-oscuro: #DAA520;
             --gris-oscuro: #2C3E50;
-            --gris-medio: #7F8C8D;
+            --gris-medio: #5D6D7E;
+            --gris-claro: #ECF0F1;
             --blanco: #FFFFFF;
             --error: #E74C3C;
             --exito: #27AE60;
-            --sombra: 0 6px 20px rgba(85, 107, 47, 0.15);
-            --sombra-intensa: 0 10px 30px rgba(85, 107, 47, 0.25);
-            --radio: 12px;
-            --radio-pequeno: 8px;
-            --fuente: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-            --transicion: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --sombra: 0 8px 30px rgba(34, 139, 34, 0.15);
+            --sombra-intensa: 0 15px 40px rgba(34, 139, 34, 0.25);
+            --radio: 16px;
+            --radio-pequeno: 10px;
+            --fuente-titulos: 'Montserrat', sans-serif;
+            --fuente-texto: 'Poppins', sans-serif;
+            --transicion: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
         }
 
         /* Reset y estilos base */
@@ -39,107 +40,156 @@
         }
 
         body {
-            font-family: var(--fuente);
-            line-height: 1.6;
+            font-family: var(--fuente-texto);
+            line-height: 1.7;
             color: var(--gris-oscuro);
-            background: linear-gradient(135deg, var(--crema) 0%, var(--verde-olivo-palido) 100%);
+            background: linear-gradient(135deg, #f8fff8 0%, var(--verde-trebol-palido) 100%);
             min-height: 100vh;
             padding: 20px;
-            animation: fadeIn 0.8s ease-out;
+            animation: fadeIn 1s ease-out;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(144, 238, 144, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(50, 205, 50, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(34, 139, 34, 0.05) 0%, transparent 30%);
+            z-index: -1;
+            pointer-events: none;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
         }
 
         .contenedor {
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
         }
 
-        /* Encabezado */
-        .encabezado {
+        /* Encabezado principal */
+        .encabezado-principal {
             text-align: center;
-            margin-bottom: 40px;
-            padding: 30px;
-            background: linear-gradient(135deg, var(--verde-olivo) 0%, var(--verde-olivo-claro) 100%);
+            margin-bottom: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--verde-trebol) 0%, var(--verde-trebol-oscuro) 100%);
             border-radius: var(--radio);
             color: var(--blanco);
             box-shadow: var(--sombra);
             position: relative;
             overflow: hidden;
-            animation: slideDown 0.7s ease-out;
+            animation: slideDown 0.8s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .encabezado::before {
+        .encabezado-principal::before {
             content: "";
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--oro), var(--oro-oscuro));
+            height: 5px;
+            background: linear-gradient(90deg, var(--oro), var(--verde-trebol-claro), var(--oro));
+            animation: shimmer 3s infinite linear;
+            background-size: 1000px 100%;
         }
 
-        .encabezado h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        .logo-titulo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
         }
 
-        .encabezado .subtitulo {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .logo-header {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
+        .logo-circular {
+            width: 100px;
+            height: 100px;
             background: var(--blanco);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            animation: pulse 2s infinite;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 5px solid var(--oro);
+            animation: float 3s ease-in-out infinite;
+            transition: var(--transicion);
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .logo-circular:hover {
+            transform: scale(1.1) rotate(5deg);
         }
 
-        .logo-header i {
-            font-size: 40px;
-            color: var(--verde-olivo);
+        .logo-circular img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+
+        .titulo-principal {
+            font-family: var(--fuente-titulos);
+            font-size: 3.2rem;
+            margin: 0;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, var(--blanco), var(--oro));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1.5px;
+        }
+
+        .subtitulo {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto 20px;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .info-lugar {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-weight: 500;
         }
 
         /* Layout principal */
         .contenido-principal {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 40px;
-            animation: fadeInUp 1s ease-out 0.2s both;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            gap: 50px;
+            animation: fadeInUp 1s ease-out 0.3s both;
         }
 
         @media (min-width: 1200px) {
             .contenido-principal {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1.2fr 0.8fr;
             }
         }
 
@@ -147,17 +197,18 @@
         .panel {
             background: var(--blanco);
             border-radius: var(--radio);
-            padding: 35px;
+            padding: 40px;
             box-shadow: var(--sombra);
             transition: var(--transicion);
-            border: 1px solid var(--verde-olivo-palido);
+            border: 1px solid var(--verde-trebol-suave);
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(10px);
         }
 
         .panel:hover {
             box-shadow: var(--sombra-intensa);
-            transform: translateY(-5px);
+            transform: translateY(-8px);
         }
 
         .panel::before {
@@ -167,38 +218,56 @@
             left: 0;
             width: 8px;
             height: 100%;
-            background: linear-gradient(to bottom, var(--verde-olivo), var(--verde-olivo-claro));
+            background: linear-gradient(to bottom, var(--verde-trebol), var(--verde-trebol-claro));
+        }
+
+        .panel::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, var(--verde-trebol-palido) 0%, transparent 70%);
+            opacity: 0.5;
+            z-index: 0;
         }
 
         .panel h2 {
-            color: var(--verde-olivo);
-            margin-bottom: 30px;
-            font-size: 1.8rem;
+            color: var(--verde-trebol);
+            margin-bottom: 35px;
+            font-size: 2rem;
+            font-family: var(--fuente-titulos);
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--crema-oscuro);
+            gap: 15px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--gris-claro);
+            position: relative;
+            z-index: 1;
         }
 
         .panel h2 i {
             color: var(--oro);
+            font-size: 1.8rem;
         }
 
-        /* Formulario */
+        /* Formulario mejorado */
         .grupo-formulario {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             position: relative;
             animation: fadeIn 0.5s ease-out;
+            z-index: 1;
         }
 
         .grupo-formulario label {
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             font-weight: 600;
-            color: var(--verde-olivo);
-            gap: 8px;
+            color: var(--verde-trebol);
+            gap: 10px;
+            font-size: 1.05rem;
         }
 
         .campo-obligatorio::after {
@@ -208,34 +277,41 @@
 
         input, select, textarea {
             width: 100%;
-            padding: 16px 20px;
-            border: 2px solid var(--crema-oscuro);
+            padding: 18px 25px;
+            border: 2px solid var(--gris-claro);
             border-radius: var(--radio-pequeno);
-            font-family: var(--fuente);
+            font-family: var(--fuente-texto);
             font-size: 16px;
             transition: var(--transicion);
             background-color: var(--blanco);
+            color: var(--gris-oscuro);
         }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--verde-olivo);
-            box-shadow: 0 0 0 3px rgba(85, 107, 47, 0.2);
+            border-color: var(--verde-trebol);
+            box-shadow: 0 0 0 4px rgba(34, 139, 34, 0.15);
+            background-color: var(--verde-trebol-palido);
+        }
+
+        input:hover, select:hover, textarea:hover {
+            border-color: var(--verde-trebol-suave);
         }
 
         textarea {
-            min-height: 120px;
+            min-height: 140px;
             resize: vertical;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .icono-campo {
             position: absolute;
-            left: 20px;
+            left: 25px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--verde-olivo-suave);
+            color: var(--verde-trebol);
             pointer-events: none;
+            font-size: 1.2rem;
         }
 
         .campo-con-icono {
@@ -243,7 +319,7 @@
         }
 
         .campo-con-icono input, .campo-con-icono select {
-            padding-left: 55px;
+            padding-left: 65px;
         }
 
         .campo-monto {
@@ -252,146 +328,174 @@
 
         .simbolo-monto {
             position: absolute;
-            left: 20px;
+            left: 25px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--verde-olivo);
+            color: var(--verde-trebol);
             font-weight: bold;
-            background: var(--crema);
-            padding: 4px 10px;
-            border-radius: 4px;
-            border: 1px solid var(--crema-oscuro);
+            background: var(--verde-trebol-palido);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 2px solid var(--verde-trebol-suave);
+            font-size: 1.1rem;
         }
 
         .campo-monto input {
-            padding-left: 70px;
-            font-size: 18px;
+            padding-left: 90px;
+            font-size: 1.2rem;
             font-weight: 600;
+            letter-spacing: 1px;
         }
 
         /* Campo fecha */
         .fecha-auto {
-            background-color: var(--crema);
-            padding: 16px 20px;
+            background-color: var(--verde-trebol-palido);
+            padding: 18px 25px;
             border-radius: var(--radio-pequeno);
-            border: 2px solid var(--crema-oscuro);
+            border: 2px solid var(--verde-trebol-suave);
             font-weight: 600;
-            color: var(--verde-olivo);
+            color: var(--verde-trebol);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
+            font-size: 1.1rem;
         }
 
         .fecha-auto i {
             color: var(--oro);
+            font-size: 1.3rem;
         }
 
-        /* Sello digital */
+        /* Sello digital mejorado */
         .sello-digital {
-            background-color: var(--crema);
-            border-radius: var(--radio-pequeno);
-            padding: 25px;
+            background: linear-gradient(135deg, var(--verde-trebol-palido) 0%, var(--blanco) 100%);
+            border-radius: var(--radio);
+            padding: 30px;
             text-align: center;
-            border: 2px dashed var(--verde-olivo-suave);
+            border: 3px dashed var(--verde-trebol);
             transition: var(--transicion);
-            margin-top: 10px;
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sello-digital::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite linear;
         }
 
         .sello-digital:hover {
-            border-color: var(--verde-olivo);
-            background-color: var(--crema-oscuro);
+            border-color: var(--oro);
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(34, 139, 34, 0.2);
         }
 
         .sello-imagen {
-            max-width: 200px;
-            margin: 0 auto 15px;
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            max-width: 220px;
+            margin: 0 auto 20px;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
             transition: var(--transicion);
+            position: relative;
+            z-index: 1;
+            border-radius: 15px;
+            border: 3px solid var(--blanco);
+            background: var(--blanco);
+            padding: 10px;
         }
 
         .sello-imagen:hover {
-            transform: scale(1.05);
+            transform: scale(1.08) rotate(2deg);
         }
 
         .sello-texto {
-            color: var(--verde-olivo);
-            font-weight: 600;
-            margin-top: 10px;
+            color: var(--verde-trebol);
+            font-weight: 700;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Botones */
+        /* Botones mejorados */
         .botones-accion {
             display: flex;
-            gap: 20px;
-            margin-top: 40px;
+            gap: 25px;
+            margin-top: 50px;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
         }
 
         .boton {
-            padding: 18px 30px;
+            padding: 20px 35px;
             border: none;
             border-radius: var(--radio-pequeno);
-            font-family: var(--fuente);
-            font-size: 16px;
+            font-family: var(--fuente-titulos);
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transicion);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 15px;
             flex: 1;
-            min-width: 200px;
+            min-width: 220px;
             text-align: center;
             position: relative;
             overflow: hidden;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
-        .boton::after {
+        .boton::before {
             content: "";
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
-            transform-origin: 50% 50%;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
         }
 
-        .boton:focus:not(:active)::after {
-            animation: ripple 1s ease-out;
-        }
-
-        @keyframes ripple {
-            0% { transform: scale(0, 0); opacity: 0.5; }
-            100% { transform: scale(20, 20); opacity: 0; }
+        .boton:hover::before {
+            left: 100%;
         }
 
         .boton-primario {
-            background: linear-gradient(135deg, var(--verde-olivo) 0%, var(--verde-olivo-claro) 100%);
+            background: linear-gradient(135deg, var(--verde-trebol) 0%, var(--verde-trebol-oscuro) 100%);
             color: var(--blanco);
-            box-shadow: 0 4px 15px rgba(85, 107, 47, 0.3);
+            box-shadow: 0 6px 20px rgba(34, 139, 34, 0.4);
         }
 
         .boton-primario:hover {
-            background: linear-gradient(135deg, var(--verde-olivo-claro) 0%, var(--verde-olivo) 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(85, 107, 47, 0.4);
+            background: linear-gradient(135deg, var(--verde-trebol-oscuro) 0%, var(--verde-trebol) 100%);
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(34, 139, 34, 0.6);
         }
 
         .boton-secundario {
             background: linear-gradient(135deg, var(--oro) 0%, var(--oro-oscuro) 100%);
-            color: var(--blanco);
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            color: var(--gris-oscuro);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
         }
 
         .boton-secundario:hover {
             background: linear-gradient(135deg, var(--oro-oscuro) 0%, var(--oro) 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6);
         }
 
         .boton:disabled {
@@ -401,17 +505,24 @@
             box-shadow: none !important;
         }
 
-        /* Recibo */
+        .boton:disabled:hover::before {
+            left: -100%;
+        }
+
+        /* Recibo profesional A4 */
         .recibo {
             background: var(--blanco);
-            padding: 40px;
+            padding: 50px 60px;
             border-radius: var(--radio);
             box-shadow: var(--sombra);
-            max-width: 800px;
+            max-width: 794px; /* Ancho A4 en pixeles para 96 DPI */
+            min-height: 1123px; /* Alto A4 en pixeles para 96 DPI */
             margin: 0 auto;
             position: relative;
-            border: 1px solid var(--crema-oscuro);
+            border: 1px solid var(--verde-trebol-suave);
             animation: fadeIn 0.8s ease-out;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         .recibo::before {
@@ -420,18 +531,34 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 6px;
-            background: linear-gradient(90deg, var(--verde-olivo), var(--oro), var(--verde-olivo));
-            border-radius: var(--radio var(--radio) 0 0;
+            height: 8px;
+            background: linear-gradient(90deg, var(--verde-trebol), var(--oro), var(--verde-trebol));
+            border-radius: var(--radio) var(--radio) 0 0;
         }
 
+        .recibo::after {
+            content: "";
+            position: absolute;
+            top: 20px;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            border: 2px solid var(--verde-trebol-palido);
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Encabezado del recibo */
         .recibo-encabezado {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 30px;
-            padding-bottom: 25px;
-            border-bottom: 3px double var(--verde-olivo-suave);
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px double var(--verde-trebol);
+            position: relative;
+            z-index: 1;
         }
 
         .info-emisor {
@@ -439,103 +566,123 @@
         }
 
         .info-emisor h3 {
-            color: var(--verde-olivo);
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+            color: var(--verde-trebol);
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-family: var(--fuente-titulos);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .info-emisor p {
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             color: var(--gris-medio);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-size: 1.05rem;
         }
 
         .info-emisor i {
-            color: var(--verde-olivo-suave);
+            color: var(--verde-trebol);
             width: 20px;
-        }
-
-        .sello-emisor {
-            width: 120px;
             text-align: center;
         }
 
-        .sello-emisor img {
+        .logo-recibo {
+            width: 140px;
+            text-align: center;
+            margin-left: 20px;
+        }
+
+        .logo-recibo img {
             max-width: 100%;
             height: auto;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.2));
         }
 
         .titulo-recibo {
             text-align: center;
-            font-size: 2.8rem;
-            margin: 20px 0 35px;
-            color: var(--verde-olivo);
-            letter-spacing: 3px;
+            font-size: 3.5rem;
+            margin: 30px 0 50px;
+            color: var(--verde-trebol);
+            letter-spacing: 4px;
             text-transform: uppercase;
+            font-family: var(--fuente-titulos);
             position: relative;
-            padding: 15px 0;
+            padding: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .titulo-recibo::before, .titulo-recibo::after {
-            content: "•";
+            content: "✿";
             color: var(--oro);
-            margin: 0 20px;
+            margin: 0 25px;
+            font-size: 2.5rem;
         }
 
         .numero-recibo {
             text-align: right;
-            font-weight: bold;
-            color: var(--verde-olivo);
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-            background: var(--crema);
-            padding: 10px 15px;
+            font-weight: 800;
+            color: var(--verde-trebol);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--verde-trebol-palido) 0%, var(--blanco) 100%);
+            padding: 15px 25px;
             border-radius: var(--radio-pequeno);
             display: inline-block;
             float: right;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--verde-trebol-suave);
+            font-family: var(--fuente-titulos);
         }
 
+        /* Información del destinatario */
         .destinatario-info {
-            background-color: var(--crema);
-            padding: 25px;
+            background: linear-gradient(135deg, var(--verde-trebol-palido) 0%, var(--blanco) 100%);
+            padding: 30px;
             border-radius: var(--radio);
-            margin-bottom: 30px;
-            border-left: 5px solid var(--verde-olivo);
+            margin-bottom: 40px;
+            border-left: 8px solid var(--verde-trebol);
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
         .destinatario-info h4 {
-            color: var(--verde-olivo);
-            margin-bottom: 15px;
-            font-size: 1.3rem;
+            color: var(--verde-trebol);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-family: var(--fuente-titulos);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
         }
 
         .destinatario-info p {
-            margin-bottom: 10px;
-            padding-left: 10px;
+            margin-bottom: 15px;
+            padding-left: 15px;
+            font-size: 1.1rem;
+            line-height: 1.8;
         }
 
+        /* Monto total destacado */
         .monto-total {
             text-align: center;
-            font-size: 2.8rem;
-            font-weight: bold;
-            color: var(--verde-olivo);
-            margin: 40px 0;
-            padding: 30px;
-            background: linear-gradient(135deg, var(--crema) 0%, var(--crema-oscuro) 100%);
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: var(--verde-trebol);
+            margin: 50px 0;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--blanco) 0%, var(--verde-trebol-palido) 100%);
             border-radius: var(--radio);
-            border: 3px solid var(--oro);
+            border: 4px solid var(--oro);
             position: relative;
             overflow: hidden;
+            font-family: var(--fuente-titulos);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 1;
         }
 
         .monto-total::before {
@@ -544,132 +691,241 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 6px;
             background: linear-gradient(90deg, transparent, var(--oro), transparent);
         }
 
-        .fecha-emision {
-            margin: 30px 0;
-            color: var(--gris-medio);
+        .monto-total::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 5s infinite linear;
+        }
+
+        .monto-letras {
+            font-size: 1.2rem;
+            margin-top: 15px;
+            color: var(--verde-trebol-oscuro);
+            font-weight: 600;
             font-style: italic;
-            background: var(--crema);
-            padding: 20px;
+        }
+
+        /* Fecha de emisión */
+        .fecha-emision {
+            margin: 40px 0;
+            color: var(--gris-medio);
+            background: var(--gris-claro);
+            padding: 25px;
             border-radius: var(--radio-pequeno);
-            border-left: 4px solid var(--verde-olivo-suave);
+            border-left: 6px solid var(--verde-trebol);
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
+        /* Autorización y sellos */
         .autorizacion {
-            margin-top: 50px;
-            padding-top: 30px;
-            border-top: 2px solid var(--verde-olivo-suave);
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 3px solid var(--verde-trebol);
+            position: relative;
+            z-index: 1;
         }
 
-        .firma-area {
+        .sellos-contenedor {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-top: 30px;
-            gap: 30px;
+            margin-top: 40px;
+            gap: 40px;
+            flex-wrap: wrap;
         }
 
         .sello-firma {
             text-align: center;
             flex: 1;
+            min-width: 250px;
         }
 
         .sello-firma img {
-            max-width: 180px;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-            opacity: 0.9;
+            max-width: 220px;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+            opacity: 0.95;
+            border-radius: 15px;
+            border: 3px solid var(--blanco);
+            background: var(--blanco);
+            padding: 15px;
         }
 
+        .sello-texto {
+            margin-top: 20px;
+            font-weight: 700;
+            color: var(--verde-trebol);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Pie del recibo */
         .pie-recibo {
             text-align: center;
-            margin-top: 50px;
+            margin-top: 70px;
             color: var(--gris-medio);
-            font-size: 0.95rem;
+            font-size: 1rem;
             line-height: 1.8;
-            padding-top: 25px;
-            border-top: 1px solid var(--crema-oscuro);
+            padding-top: 30px;
+            border-top: 2px solid var(--gris-claro);
+            position: relative;
+            z-index: 1;
         }
 
-        /* Notificaciones */
-        .notificacion {
-            padding: 18px 25px;
-            border-radius: var(--radio-pequeno);
-            margin-top: 25px;
-            display: none;
-            animation: slideIn 0.5s ease-out;
+        .lugar-emision {
+            font-weight: 700;
+            color: var(--verde-trebol);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
             align-items: center;
+            justify-content: center;
             gap: 15px;
         }
 
+        /* Notificaciones mejoradas */
+        .notificacion {
+            padding: 20px 30px;
+            border-radius: var(--radio-pequeno);
+            margin-top: 30px;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .notificacion-exito {
-            background-color: rgba(39, 174, 96, 0.1);
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.15) 0%, rgba(39, 174, 96, 0.05) 100%);
             color: var(--exito);
-            border-left: 5px solid var(--exito);
+            border-left: 6px solid var(--exito);
         }
 
         .notificacion-error {
-            background-color: rgba(231, 76, 60, 0.1);
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.15) 0%, rgba(231, 76, 60, 0.05) 100%);
             color: var(--error);
-            border-left: 5px solid var(--error);
+            border-left: 6px solid var(--error);
         }
 
-        /* Estados */
+        /* Estados y validaciones */
         .oculto {
             display: none;
         }
 
         .campo-invalido {
             border-color: var(--error) !important;
-            background-color: rgba(231, 76, 60, 0.05);
+            background-color: rgba(231, 76, 60, 0.05) !important;
         }
 
         .mensaje-error {
             color: var(--error);
-            font-size: 14px;
-            margin-top: 8px;
+            font-size: 0.95rem;
+            margin-top: 10px;
             display: none;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             animation: shake 0.5s ease-out;
+            font-weight: 500;
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
         }
 
-        /* Responsive */
-        @media (max-width: 992px) {
-            .encabezado h1 {
-                font-size: 2.2rem;
-            }
-            
-            .panel {
-                padding: 25px;
+        /* Responsive mejorado */
+        @media (max-width: 1100px) {
+            .contenido-principal {
+                grid-template-columns: 1fr;
             }
             
             .recibo {
-                padding: 25px;
+                padding: 40px;
+                max-width: 100%;
+            }
+            
+            .titulo-recibo {
+                font-size: 2.8rem;
+            }
+            
+            .monto-total {
+                font-size: 2.8rem;
+                padding: 30px;
+            }
+            
+            .sellos-contenedor {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .encabezado-principal {
+                padding: 30px 20px;
+            }
+            
+            .titulo-principal {
+                font-size: 2.5rem;
+            }
+            
+            .logo-titulo {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .panel {
+                padding: 30px 20px;
+            }
+            
+            .recibo {
+                padding: 30px 25px;
+                min-height: auto;
+            }
+            
+            .recibo-encabezado {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo-recibo {
+                margin: 20px auto;
+            }
+            
+            .titulo-recibo {
+                font-size: 2.2rem;
+                letter-spacing: 2px;
             }
             
             .monto-total {
                 font-size: 2.2rem;
-                padding: 20px;
-            }
-            
-            .firma-area {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
+                padding: 25px;
             }
             
             .boton {
@@ -681,45 +937,46 @@
             }
         }
 
-        @media (max-width: 576px) {
+        @media print {
             body {
-                padding: 10px;
+                background: white !important;
+                padding: 0 !important;
             }
             
-            .encabezado {
-                padding: 20px;
+            .panel:not(#panel-recibo),
+            .encabezado-principal,
+            .botones-accion,
+            .notificacion {
+                display: none !important;
             }
             
-            .encabezado h1 {
-                font-size: 1.8rem;
-            }
-            
-            .titulo-recibo {
-                font-size: 2rem;
-            }
-            
-            .panel {
-                padding: 20px;
+            .recibo {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 20px !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+                min-height: auto !important;
             }
         }
 
-        /* Utilidades */
+        /* Utilidades mejoradas */
         .texto-centro {
             text-align: center;
         }
 
-        .mt-30 {
-            margin-top: 30px;
+        .mt-40 {
+            margin-top: 40px;
         }
 
-        .mb-30 {
-            margin-bottom: 30px;
+        .mb-40 {
+            margin-bottom: 40px;
         }
 
         .cargando {
             display: inline-block;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: var(--blanco);
@@ -730,7 +987,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Área de live para accesibilidad */
+        /* Área para accesibilidad */
         .aria-live {
             position: absolute;
             width: 1px;
@@ -742,17 +999,55 @@
             white-space: nowrap;
             border: 0;
         }
+
+        /* Decoración de hojas */
+        .hoja-decoracion {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hoja-1 {
+            top: 10%;
+            left: 5%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,10 C70,10 85,25 85,45 C85,65 70,80 50,80 C30,80 15,65 15,45 C15,25 30,10 50,10 Z" fill="%23228B22"/></svg>');
+            background-size: contain;
+            transform: rotate(15deg);
+        }
+
+        .hoja-2 {
+            bottom: 10%;
+            right: 5%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,10 C70,10 85,25 85,45 C85,65 70,80 50,80 C30,80 15,65 15,45 C15,25 30,10 50,10 Z" fill="%23228B22"/></svg>');
+            background-size: contain;
+            transform: rotate(-15deg);
+        }
     </style>
 </head>
 <body>
+    <!-- Decoración de fondo -->
+    <div class="hoja-decoracion hoja-1"></div>
+    <div class="hoja-decoracion hoja-2"></div>
+    
     <div class="contenedor">
-        <!-- Encabezado -->
-        <header class="encabezado">
-            <div class="logo-header">
-                <i class="fas fa-file-invoice-dollar"></i>
+        <!-- Encabezado principal -->
+        <header class="encabezado-principal">
+            <div class="logo-titulo">
+                <div class="logo-circular">
+                    <img src="assets/logo.png" alt="Logo Recibo Trébol" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"45\" fill=\"%23228B22\"/><path d=\"M50,25 C60,25 68,30 73,38 C78,46 78,56 73,64 C68,72 60,77 50,77 C40,77 32,72 27,64 C22,56 22,46 27,38 C32,30 40,25 50,25 Z M50,35 C55,35 60,38 63,43 C66,48 66,54 63,59 C60,64 55,67 50,67 C45,67 40,64 37,59 C34,54 34,48 37,43 C40,38 45,35 50,35 Z\" fill=\"%23FFFFFF\"/></svg>'">
+                </div>
+                <h1 class="titulo-principal">RECIBO TRÉBOL</h1>
             </div>
-            <h1>Sistema de Recibos Verdes Olivos</h1>
-            <p class="subtitulo">Emisión profesional de recibos con sello digital y descarga en PDF</p>
+            
+            <p class="subtitulo">Sistema profesional de emisión de recibos con validación digital y exportación a PDF de alta calidad</p>
+            
+            <div class="info-lugar">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Lugar de emisión: YACUIBA - TARIJA - BOLIVIA</span>
+            </div>
         </header>
 
         <!-- Contenido principal -->
@@ -765,11 +1060,11 @@
                     <!-- Nombre/Razón Social -->
                     <div class="grupo-formulario">
                         <label for="nombre" class="campo-obligatorio">
-                            <i class="fas fa-user"></i> Nombre o razón social
+                            <i class="fas fa-user-tie"></i> Nombre o razón social
                         </label>
                         <div class="campo-con-icono">
-                            <i class="fas fa-user icono-campo"></i>
-                            <input type="text" id="nombre" placeholder="Ej: Juan Pérez o Empresa S.A.">
+                            <i class="fas fa-user-tie icono-campo"></i>
+                            <input type="text" id="nombre" placeholder="Ej: Juan Pérez Morales o Empresa S.A.">
                         </div>
                         <div class="mensaje-error" id="error-nombre">
                             <i class="fas fa-exclamation-circle"></i> Este campo es obligatorio
@@ -783,23 +1078,26 @@
                         </label>
                         <div class="campo-con-icono">
                             <i class="fas fa-id-card icono-campo"></i>
-                            <input type="text" id="ci-nit" placeholder="Ej: 1234567 o 123456789">
+                            <input type="text" id="ci-nit" placeholder="Ej: 1234567 SC o 123456789">
                         </div>
                     </div>
 
                     <!-- Ítem -->
                     <div class="grupo-formulario">
                         <label for="item" class="campo-obligatorio">
-                            <i class="fas fa-list"></i> Ítem
+                            <i class="fas fa-tags"></i> Ítem de servicio
                         </label>
                         <div class="campo-con-icono">
-                            <i class="fas fa-list icono-campo"></i>
+                            <i class="fas fa-tags icono-campo"></i>
                             <select id="item">
                                 <option value="">Seleccione un ítem</option>
                                 <option value="ALQUILER DE VEHÍCULO">ALQUILER DE VEHÍCULO</option>
                                 <option value="ALQUILER DE ALMACÉN">ALQUILER DE ALMACÉN</option>
                                 <option value="ALQUILER DE VIVIENDA">ALQUILER DE VIVIENDA</option>
                                 <option value="SERVICIO DE METALURGIA">SERVICIO DE METALURGIA</option>
+                                <option value="SERVICIO DE CONSTRUCCIÓN">SERVICIO DE CONSTRUCCIÓN</option>
+                                <option value="CONSULTORÍA TÉCNICA">CONSULTORÍA TÉCNICA</option>
+                                <option value="VENTA DE MATERIALES">VENTA DE MATERIALES</option>
                                 <option value="VARIOS">VARIOS</option>
                             </select>
                         </div>
@@ -811,35 +1109,36 @@
                     <!-- Detalle -->
                     <div class="grupo-formulario">
                         <label for="detalle">
-                            <i class="fas fa-align-left"></i> Detalle
+                            <i class="fas fa-align-left"></i> Detalle del servicio
                         </label>
-                        <textarea id="detalle" placeholder="Descripción detallada del servicio o producto..."></textarea>
+                        <textarea id="detalle" placeholder="Descripción detallada del servicio, materiales, plazo, especificaciones técnicas..."></textarea>
                     </div>
 
                     <!-- Monto -->
                     <div class="grupo-formulario">
                         <label for="monto" class="campo-obligatorio">
-                            <i class="fas fa-money-bill-wave"></i> Monto (Bs)
+                            <i class="fas fa-money-bill-wave"></i> Monto en Bolivianos (Bs)
                         </label>
                         <div class="campo-monto">
                             <span class="simbolo-monto">Bs</span>
                             <input type="text" id="monto" placeholder="0.00" inputmode="decimal">
                         </div>
                         <div class="mensaje-error" id="error-monto">
-                            <i class="fas fa-exclamation-circle"></i> Ingrese un monto válido mayor a 0 (ej: 1500.50)
+                            <i class="fas fa-exclamation-circle"></i> Ingrese un monto válido mayor a 0 (formato: 1500.50)
                         </div>
                     </div>
 
-                    <!-- Fecha (automática) -->
+                    <!-- Fecha automática -->
                     <div class="grupo-formulario">
                         <label>
-                            <i class="fas fa-calendar-alt"></i> Fecha de emisión (Bolivia)
+                            <i class="fas fa-calendar-check"></i> Fecha de emisión (Bolivia)
                         </label>
                         <div class="fecha-auto">
                             <i class="fas fa-clock"></i>
-                            <span id="fecha-actual">Cargando fecha...</span>
+                            <span id="fecha-actual">Cargando fecha y hora...</span>
                         </div>
                         <input type="hidden" id="fecha-iso">
+                        <input type="hidden" id="fecha-texto">
                     </div>
 
                     <!-- Sello Digital -->
@@ -848,9 +1147,9 @@
                             <i class="fas fa-stamp"></i> Sello Digital Autorizado
                         </label>
                         <div class="sello-digital">
-                            <img src="assets/sello.png" alt="Sello digital autorizado" class="sello-imagen" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"100\" viewBox=\"0 0 200 100\"><rect width=\"200\" height=\"100\" fill=\"%23F5F5DC\" rx=\"10\"/><circle cx=\"100\" cy=\"50\" r=\"35\" fill=\"%23556B2F\" opacity=\"0.1\"/><text x=\"100\" y=\"40\" text-anchor=\"middle\" fill=\"%23556B2F\" font-size=\"14\" font-weight=\"bold\">SELLO OFICIAL</text><text x=\"100\" y=\"60\" text-anchor=\"middle\" fill=\"%23556B2F\" font-size=\"12\">Verdes Olivos</text></svg>'">
+                            <img src="assets/sello.png" alt="Sello digital autorizado Recibo Trébol" class="sello-imagen" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 200 200\"><circle cx=\"100\" cy=\"100\" r=\"90\" fill=\"%23f8fff8\" stroke=\"%23228B22\" stroke-width=\"4\"/><circle cx=\"100\" cy=\"100\" r=\"70\" fill=\"%23FFFFFF\" stroke=\"%23FFD700\" stroke-width=\"3\"/><text x=\"100\" y=\"80\" text-anchor=\"middle\" fill=\"%23228B22\" font-size=\"18\" font-weight=\"bold\">SELLO OFICIAL</text><text x=\"100\" y=\"110\" text-anchor=\"middle\" fill=\"%23228B22\" font-size=\"14\">RECIBO TRÉBOL</text><text x=\"100\" y=\"135\" text-anchor=\"middle\" fill=\"%23228B22\" font-size=\"12\">YACUIBA - BOLIVIA</text></svg>'">
                             <div class="sello-texto">
-                                <i class="fas fa-check-circle"></i> Sello digital autorizado
+                                <i class="fas fa-check-circle"></i> Sello digital autorizado - Recibo Trébol
                             </div>
                         </div>
                     </div>
@@ -858,7 +1157,7 @@
                     <!-- Botones de acción -->
                     <div class="botones-accion">
                         <button type="button" id="generar-recibo" class="boton boton-primario">
-                            <i class="fas fa-file-invoice"></i> Generar recibo
+                            <i class="fas fa-file-invoice-dollar"></i> Generar Recibo
                         </button>
                         <button type="button" id="descargar-pdf" class="boton boton-secundario" disabled>
                             <i class="fas fa-file-pdf"></i> Descargar PDF
@@ -869,7 +1168,7 @@
                 <!-- Notificaciones -->
                 <div id="notificacion-exito" class="notificacion notificacion-exito">
                     <i class="fas fa-check-circle"></i>
-                    <span>¡Recibo generado exitosamente! Ya puede descargar el PDF.</span>
+                    <span>¡Recibo generado exitosamente! Ya puede descargar el PDF de alta calidad.</span>
                 </div>
                 
                 <div id="notificacion-error" class="notificacion notificacion-error">
@@ -880,17 +1179,24 @@
 
             <!-- Panel del recibo generado -->
             <section class="panel" id="panel-recibo">
-                <h2><i class="fas fa-eye"></i> Vista Previa del Recibo</h2>
+                <h2><i class="fas fa-eye"></i> Vista Previa del Recibo (Formato A4)</h2>
                 <div id="contenedor-recibo" class="recibo">
-                    <div class="texto-centro" style="padding: 50px 20px; color: var(--gris-medio);">
-                        <i class="fas fa-receipt" style="font-size: 60px; margin-bottom: 20px; color: var(--verde-olivo-suave);"></i>
-                        <h3 style="color: var(--verde-olivo); margin-bottom: 15px;">Recibo en espera</h3>
-                        <p>Complete el formulario para generar un recibo profesional</p>
+                    <div class="texto-centro" style="padding: 100px 20px; color: var(--gris-medio);">
+                        <i class="fas fa-receipt" style="font-size: 80px; margin-bottom: 30px; color: var(--verde-trebol-suave);"></i>
+                        <h3 style="color: var(--verde-trebol); margin-bottom: 20px; font-size: 2rem;">Recibo en espera</h3>
+                        <p style="font-size: 1.2rem; max-width: 500px; margin: 0 auto;">Complete el formulario para generar un recibo profesional en formato A4 listo para descargar</p>
+                        <div style="margin-top: 40px; padding: 20px; background: var(--verde-trebol-palido); border-radius: var(--radio-pequeno);">
+                            <p style="margin-bottom: 10px;"><i class="fas fa-info-circle"></i> <strong>Características:</strong></p>
+                            <p style="font-size: 0.95rem; margin-bottom: 5px;">✓ Formato A4 profesional</p>
+                            <p style="font-size: 0.95rem; margin-bottom: 5px;">✓ Alta calidad de imagen (300 DPI)</p>
+                            <p style="font-size: 0.95rem; margin-bottom: 5px;">✓ Sellos digitales antimodificación</p>
+                            <p style="font-size: 0.95rem;">✓ Válido para fines legales y administrativos</p>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="mt-30" style="text-align: center; color: var(--gris-medio); font-size: 0.9rem;">
-                    <i class="fas fa-info-circle"></i> El recibo generado es válido para fines administrativos
+                <div class="mt-40" style="text-align: center; color: var(--gris-medio); font-size: 0.95rem;">
+                    <i class="fas fa-shield-alt"></i> Documento generado con estándares profesionales - RECIBO TRÉBOL © <span id="anio-actual"></span>
                 </div>
             </section>
         </main>
@@ -904,6 +1210,7 @@
         let numeroRecibo = parseInt(localStorage.getItem('ultimoRecibo') || '1000');
         let fechaBolivia;
         let generandoPDF = false;
+        let reciboGenerado = false;
 
         // Inicialización al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
@@ -911,7 +1218,20 @@
             cargarUltimoDestinatario();
             configurarEventos();
             actualizarFechaPeriodicamente();
+            document.getElementById('anio-actual').textContent = new Date().getFullYear();
+            
+            // Cargar imágenes con precarga para mejor experiencia
+            precargarImagenes();
         });
+
+        // Precargar imágenes
+        function precargarImagenes() {
+            const imagenes = ['assets/logo.png', 'assets/sello.png'];
+            imagenes.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        }
 
         // Configurar fecha actual de Bolivia
         function inicializarFecha() {
@@ -923,20 +1243,32 @@
                 weekday: 'long',
                 hour: '2-digit',
                 minute: '2-digit',
-                second: '2-digit'
+                second: '2-digit',
+                hour12: false
             };
             
             const ahora = new Date();
             fechaBolivia = ahora.toLocaleString('es-BO', opciones);
-            const fechaISO = ahora.toLocaleString('sv-SE', { timeZone: 'America/La_Paz' }) + '-04:00';
+            const fechaISO = ahora.toISOString().split('.')[0] + '-04:00';
+            
+            // Formato especial para el recibo
+            const fechaRecibo = ahora.toLocaleString('es-BO', {
+                timeZone: 'America/La_Paz',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
             
             document.getElementById('fecha-actual').textContent = fechaBolivia;
             document.getElementById('fecha-iso').value = fechaISO;
+            document.getElementById('fecha-texto').value = fechaRecibo;
         }
 
-        // Actualizar fecha cada minuto
+        // Actualizar fecha cada 30 segundos
         function actualizarFechaPeriodicamente() {
-            setInterval(inicializarFecha, 60000);
+            setInterval(inicializarFecha, 30000);
         }
 
         // Configurar eventos
@@ -948,11 +1280,20 @@
             });
 
             // Validar campos en tiempo real
-            document.querySelectorAll('#formulario-recibo input, #formulario-recibo select').forEach(elemento => {
+            document.querySelectorAll('#formulario-recibo input, #formulario-recibo select, #formulario-recibo textarea').forEach(elemento => {
                 elemento.addEventListener('blur', function() {
                     if (this.id && this.id !== 'ci-nit' && this.id !== 'detalle') {
                         validarCampo(this.id);
                     }
+                });
+                
+                // Efecto visual al enfocar
+                elemento.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'scale(1.02)';
+                });
+                
+                elemento.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'scale(1)';
                 });
             });
 
@@ -967,7 +1308,7 @@
             document.getElementById('descargar-pdf').addEventListener('click', descargarPDF);
         }
 
-        // Formatear monto
+        // Formatear monto automáticamente
         function formatearMonto(input) {
             let valor = input.value.replace(/[^0-9.]/g, '');
             valor = valor.replace(/(\..*)\./g, '$1');
@@ -979,7 +1320,14 @@
                 valor = partes.join('.');
             }
             
-            input.value = valor;
+            // Formatear con separadores de miles
+            if (valor) {
+                const partesEntero = valor.split('.');
+                partesEntero[0] = partesEntero[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                input.value = partesEntero.join('.');
+            } else {
+                input.value = valor;
+            }
         }
 
         // Validar campo individual
@@ -993,6 +1341,9 @@
                     if (!elemento.value.trim()) {
                         valido = false;
                         mensaje = 'Este campo es obligatorio';
+                    } else if (elemento.value.trim().length < 3) {
+                        valido = false;
+                        mensaje = 'Debe tener al menos 3 caracteres';
                     }
                     break;
                     
@@ -1004,10 +1355,17 @@
                     break;
                     
                 case 'monto':
-                    const monto = parseFloat(elemento.value);
+                    let valor = elemento.value.replace(/\./g, '');
+                    const monto = parseFloat(valor);
                     if (!monto || isNaN(monto) || monto <= 0) {
                         valido = false;
                         mensaje = 'Ingrese un monto válido mayor a 0';
+                    } else if (monto > 10000000) {
+                        valido = false;
+                        mensaje = 'El monto no puede exceder 10,000,000 Bs';
+                    } else if (valor.split('.')[1] && valor.split('.')[1].length > 2) {
+                        valido = false;
+                        mensaje = 'Máximo 2 decimales';
                     }
                     break;
             }
@@ -1034,7 +1392,10 @@
             
             if (!valido) {
                 mostrarNotificacion('error', 'Hay errores en el formulario. Revise los campos marcados.');
-                document.getElementById('panel-formulario').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                document.getElementById('panel-formulario').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
             }
             
             return valido;
@@ -1064,18 +1425,18 @@
                 notificacionExito.style.display = 'flex';
                 setTimeout(() => {
                     notificacionExito.style.display = 'none';
-                }, 5000);
+                }, 6000);
             } else {
                 notificacionExito.style.display = 'none';
                 notificacionError.style.display = 'flex';
                 mensajeError.textContent = mensaje;
                 setTimeout(() => {
                     notificacionError.style.display = 'none';
-                }, 5000);
+                }, 6000);
             }
         }
 
-        // Generar el recibo HTML
+        // Generar el recibo HTML (optimizado para A4)
         function generarRecibo() {
             // Incrementar número de recibo
             numeroRecibo++;
@@ -1086,9 +1447,10 @@
             const ciNit = escapeHTML(document.getElementById('ci-nit').value.trim());
             const item = document.getElementById('item').value;
             const detalle = escapeHTML(document.getElementById('detalle').value.trim());
-            const monto = parseFloat(document.getElementById('monto').value);
+            let montoValor = document.getElementById('monto').value.replace(/\./g, '');
+            const monto = parseFloat(montoValor);
             
-            // Formatear monto
+            // Formatear monto para mostrar
             const formateador = new Intl.NumberFormat('es-BO', {
                 style: 'currency',
                 currency: 'BOB',
@@ -1097,29 +1459,29 @@
             });
             const montoFormateado = formateador.format(monto);
             
-            // Crear HTML del recibo
+            // Crear HTML del recibo optimizado para A4
             const reciboHTML = `
                 <div class="numero-recibo">
-                    <i class="fas fa-hashtag"></i> Recibo N°: <strong>${numeroRecibo}</strong>
+                    <i class="fas fa-hashtag"></i> RECIBO N°: <strong>${numeroRecibo.toString().padStart(6, '0')}</strong>
                 </div>
                 
                 <div class="recibo-encabezado">
                     <div class="info-emisor">
                         <h3><i class="fas fa-user-tie"></i> FRANZ RAFAEL MANGUIA IÑIGUEZ</h3>
-                        <p><i class="fas fa-id-card"></i> <strong>CI:</strong> 5045135</p>
+                        <p><i class="fas fa-id-card"></i> <strong>C.I.:</strong> 5.045.135</p>
                         <p><i class="fas fa-phone"></i> <strong>Celular:</strong> 72971268</p>
                         <p><i class="fas fa-map-marker-alt"></i> <strong>Dirección:</strong> Barrio San Gerónimo</p>
-                        <p><i class="fas fa-city"></i> <strong>Ciudad:</strong> Sucre, Chuquisaca</p>
+                        <p><i class="fas fa-city"></i> <strong>Ciudad:</strong> Yacuiba - Tarija - Bolivia</p>
                     </div>
-                    <div class="sello-emisor">
-                        <img src="assets/sello.png" alt="Sello de la empresa" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"120\" height=\"120\" viewBox=\"0 0 120 120\"><circle cx=\"60\" cy=\"60\" r=\"55\" fill=\"%23556B2F\" opacity=\"0.1\"/><circle cx=\"60\" cy=\"60\" r=\"45\" fill=\"%23F5F5DC\"/><text x=\"60\" y=\"45\" text-anchor=\"middle\" fill=\"%23556B2F\" font-size=\"10\" font-weight=\"bold\">SELLO OFICIAL</text><text x=\"60\" y=\"60\" text-anchor=\"middle\" fill=\"%23556B2F\" font-size=\"8\">FRANZ R. MANGUIA</text><text x=\"60\" y=\"75\" text-anchor=\"middle\" fill=\"%23556B2F\" font-size=\"8\">CI 5045135</text></svg>'">
+                    <div class="logo-recibo">
+                        <img src="assets/logo.png" alt="Logo Recibo Trébol" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 120 120\"><circle cx=\"60\" cy=\"60\" r=\"55\" fill=\"%23228B22\"/><path d=\"M60,30 C70,30 78,35 83,43 C88,51 88,61 83,69 C78,77 70,82 60,82 C50,82 42,77 37,69 C32,61 32,51 37,43 C42,35 50,30 60,30 Z M60,40 C65,40 70,43 73,48 C76,53 76,59 73,64 C70,69 65,72 60,72 C55,72 50,69 47,64 C44,59 44,53 47,48 C50,43 55,40 60,40 Z\" fill=\"%23FFFFFF\"/></svg>'">
                     </div>
                 </div>
                 
                 <h2 class="titulo-recibo">RECIBO</h2>
                 
                 <div class="destinatario-info">
-                    <h4><i class="fas fa-user-check"></i> Datos del Destinatario</h4>
+                    <h4><i class="fas fa-user-check"></i> DATOS DEL DESTINATARIO</h4>
                     <p><strong>Señor(es):</strong> ${nombre}</p>
                     ${ciNit ? `<p><strong>CI/NIT:</strong> ${ciNit}</p>` : ''}
                     <p><strong>Concepto:</strong> ${item}</p>
@@ -1127,36 +1489,57 @@
                 </div>
                 
                 <div class="monto-total">
-                    <div>Total a Pagar</div>
-                    <div style="font-size: 3.5rem; margin-top: 10px;">${montoFormateado}</div>
-                    <div style="font-size: 1rem; margin-top: 10px; color: var(--verde-olivo-claro);">
+                    <div style="font-size: 1.5rem; margin-bottom: 10px;">TOTAL A PAGAR</div>
+                    <div style="font-size: 4rem; margin: 15px 0;">${montoFormateado}</div>
+                    <div class="monto-letras">
                         ${numeroALetras(monto)} BOLIVIANOS
                     </div>
                 </div>
                 
                 <div class="fecha-emision">
-                    <p><strong><i class="fas fa-calendar-alt"></i> Fecha y hora de emisión:</strong> ${fechaBolivia}</p>
+                    <p><strong><i class="fas fa-calendar-alt"></i> Fecha y hora de emisión:</strong> ${document.getElementById('fecha-texto').value}</p>
                     <p><strong><i class="fas fa-globe-americas"></i> Zona horaria:</strong> America/La_Paz (UTC-4)</p>
-                    <p><strong><i class="fas fa-code"></i> Timestamp técnico:</strong> ${document.getElementById('fecha-iso').value}</p>
+                    <p><strong><i class="fas fa-fingerprint"></i> ID Transacción:</strong> RT-${numeroRecibo}-${Date.now().toString().slice(-6)}</p>
                 </div>
                 
                 <div class="autorizacion">
-                    <h4><i class="fas fa-file-signature"></i> Autorización y Conformidad</h4>
-                    <div class="firma-area">
+                    <h4><i class="fas fa-file-signature"></i> AUTORIZACIÓN Y CONFORMIDAD</h4>
+                    <div class="sellos-contenedor">
                         <div class="sello-firma">
-                            <img src="assets/sello.png" alt="Sello de autorización" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"180\" height=\"180\" viewBox=\"0 0 180 180\"><circle cx=\"90\" cy=\"90\" r=\"85\" fill=\"%23556B2F\" opacity=\"0.05\"/><circle cx=\"90\" cy=\"90\" r=\"70\" fill=\"%23F5F5DC\" stroke=\"%23D4AF37\" stroke-width=\"2\"/><text x=\"90\" y=\"70\" text-anchor=\"middle\" fill=\"%23556B2F\" font-size=\"16\" font-weight=\"bold\">AUTORIZADO</text><text x=\"90\" y=\"95\" text-anchor=\"middle\" fill=\"%23556B2F\" font-size=\"14\">FRANZ R. MANGUIA</text><text x=\"90\" y=\"115\" text-anchor=\"middle\" fill=\"%23556B2F\" font-size=\"12\">CI 5045135</text><text x=\"90\" y=\"135\" text-anchor=\"middle\" fill=\"%23D4AF37\" font-size=\"10\">${numeroRecibo.toString().padStart(6, '0')}</text></svg>'">
-                            <p style="margin-top: 15px; font-weight: bold; color: var(--verde-olivo);">
+                            <img src="assets/sello.png" alt="Sello de autorización Recibo Trébol" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 180 180\"><circle cx=\"90\" cy=\"90\" r=\"85\" fill=\"%23f8fff8\" stroke=\"%23228B22\" stroke-width=\"4\"/><circle cx=\"90\" cy=\"90\" r=\"65\" fill=\"%23FFFFFF\" stroke=\"%23FFD700\" stroke-width=\"3\"/><text x=\"90\" y=\"70\" text-anchor=\"middle\" fill=\"%23228B22\" font-size=\"20\" font-weight=\"bold\">AUTORIZADO</text><text x=\"90\" y=\"100\" text-anchor=\"middle\" fill=\"%23228B22\" font-size=\"16\">RECIBO TRÉBOL</text><text x=\"90\" y=\"125\" text-anchor=\"middle\" fill=\"%23228B22\" font-size=\"14\">FRANZ R. MANGUIA</text><text x=\"90\" y=\"145\" text-anchor=\"middle\" fill=\"%23FFD700\" font-size=\"12\">CI 5.045.135</text></svg>'">
+                            <div class="sello-texto">
                                 <i class="fas fa-stamp"></i> Sello y Firma del Emisor
-                            </p>
+                            </div>
+                        </div>
+                        
+                        <div class="sello-firma">
+                            <div style="height: 180px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f8fff8 0%, #FFFFFF 100%); border-radius: 15px; border: 3px solid #E8F5E8; padding: 20px;">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 1.8rem; color: #228B22; margin-bottom: 15px;">
+                                        <i class="fas fa-qrcode"></i>
+                                    </div>
+                                    <div style="font-family: monospace; font-size: 0.9rem; color: #5D6D7E; word-break: break-all;">
+                                        REC-TREBOL-${numeroRecibo.toString().padStart(6, '0')}
+                                    </div>
+                                    <div style="font-size: 0.8rem; color: #7F8C8D; margin-top: 10px;">
+                                        Código de verificación
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sello-texto">
+                                <i class="fas fa-shield-alt"></i> Código de Seguridad
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="pie-recibo">
-                    <p style="margin-bottom: 15px;"><strong><i class="fas fa-exclamation-circle"></i> Nota:</strong> Este recibo es válido para fines administrativos y legales.</p>
-                    <p><i class="fas fa-map-marked-alt"></i> <strong>Lugar de emisión:</strong> Sucre, Chuquisaca, Bolivia</p>
-                    <p style="margin-top: 20px; font-size: 0.8rem; color: var(--gris-medio);">
-                        <i class="fas fa-lock"></i> Documento generado electrónicamente - ${new Date().getFullYear()}
+                    <div class="lugar-emision">
+                        <i class="fas fa-map-marked-alt"></i> LUGAR DE EMISIÓN: YACUIBA - TARIJA - BOLIVIA
+                    </div>
+                    <p style="margin-bottom: 15px; font-size: 1.1rem;"><strong><i class="fas fa-exclamation-circle"></i> Nota:</strong> Este recibo es válido para fines administrativos, legales y contables.</p>
+                    <p style="margin-top: 20px; font-size: 0.9rem; color: var(--gris-medio);">
+                        <i class="fas fa-lock"></i> Documento generado electrónicamente - RECIBO TRÉBOL © ${new Date().getFullYear()} | Protegido contra modificaciones
                     </p>
                 </div>
             `;
@@ -1167,68 +1550,88 @@
             contenedorRecibo.innerHTML = reciboHTML;
             
             setTimeout(() => {
-                contenedorRecibo.style.transition = 'opacity 0.5s ease';
+                contenedorRecibo.style.transition = 'opacity 0.6s ease';
                 contenedorRecibo.style.opacity = '1';
             }, 50);
             
             // Habilitar descarga PDF y mostrar mensaje
             document.getElementById('descargar-pdf').disabled = false;
-            mostrarNotificacion('exito', `Recibo N° ${numeroRecibo} generado exitosamente.`);
+            reciboGenerado = true;
+            
+            mostrarNotificacion('exito', `Recibo N° ${numeroRecibo} generado exitosamente. Listo para descargar en PDF de alta calidad.`);
             
             // Guardar último destinatario
             localStorage.setItem('ultimoDestinatario', document.getElementById('nombre').value.trim());
             
-            anunciarAccesibilidad(`Recibo número ${numeroRecibo} generado exitosamente. Ya puede descargar el PDF.`);
+            anunciarAccesibilidad(`Recibo número ${numeroRecibo} generado exitosamente. Ya puede descargar el PDF en calidad de imagen.`);
             
-            // Desplazar vista al recibo en móviles
-            if (window.innerWidth < 1200) {
+            // Desplazar vista al recibo en pantallas pequeñas
+            if (window.innerWidth < 1100) {
                 setTimeout(() => {
                     document.getElementById('panel-recibo').scrollIntoView({ 
                         behavior: 'smooth', 
                         block: 'start'
                     });
-                }, 300);
+                }, 500);
             }
+            
+            // Efecto visual en el botón de descarga
+            const botonDescarga = document.getElementById('descargar-pdf');
+            botonDescarga.style.animation = 'pulse 1.5s infinite';
         }
 
-        // Descargar PDF
+        // Descargar PDF como imagen de alta calidad
         function descargarPDF() {
-            if (generandoPDF) return;
+            if (generandoPDF || !reciboGenerado) return;
             
             generandoPDF = true;
             const botonPDF = document.getElementById('descargar-pdf');
             const textoOriginal = botonPDF.innerHTML;
             
             // Mostrar indicador de carga
-            botonPDF.innerHTML = '<span class="cargando"></span> Generando PDF...';
+            botonPDF.innerHTML = '<span class="cargando"></span> Generando PDF de alta calidad...';
             botonPDF.disabled = true;
+            botonPDF.style.animation = 'none';
             
             const elemento = document.getElementById('contenedor-recibo');
+            
+            // Configuración optimizada para calidad de imagen A4
             const opciones = {
-                margin: [15, 15, 15, 15],
-                filename: `recibo-${numeroRecibo}.pdf`,
+                margin: [10, 10, 10, 10], // Márgenes mínimos
+                filename: `Recibo-Trebol-${numeroRecibo}.pdf`,
                 image: { 
                     type: 'jpeg', 
-                    quality: 0.98 
+                    quality: 1.0, // Calidad máxima
+                    compression: 'none'
                 },
                 html2canvas: { 
-                    scale: 3,
+                    scale: 4, // Escala alta para calidad de imagen
                     useCORS: true,
                     logging: false,
                     backgroundColor: '#FFFFFF',
                     letterRendering: true,
-                    allowTaint: true
+                    allowTaint: true,
+                    onclone: function(clonedDoc) {
+                        // Asegurar que el recibo se vea bien en el canvas
+                        const recibo = clonedDoc.getElementById('contenedor-recibo');
+                        if (recibo) {
+                            recibo.style.boxShadow = 'none';
+                            recibo.style.border = '1px solid #ddd';
+                        }
+                    }
                 },
                 jsPDF: { 
                     unit: 'mm', 
                     format: 'a4', 
                     orientation: 'portrait',
-                    compress: true
+                    compress: false, // Sin compresión para máxima calidad
+                    hotfixes: ['px_scaling']
                 },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+                enableLinks: false // Deshabilitar enlaces para que sea solo imagen
             };
             
-            anunciarAccesibilidad('Generando PDF, por favor espere unos segundos...');
+            anunciarAccesibilidad('Generando PDF de alta calidad, por favor espere... Esto puede tomar unos segundos.');
             
             html2pdf().set(opciones).from(elemento).save().then(() => {
                 // Restaurar botón
@@ -1236,43 +1639,115 @@
                 botonPDF.disabled = false;
                 generandoPDF = false;
                 
-                mostrarNotificacion('exito', `PDF recibo-${numeroRecibo}.pdf descargado exitosamente.`);
-                anunciarAccesibilidad(`PDF recibo-${numeroRecibo}.pdf descargado exitosamente.`);
+                mostrarNotificacion('exito', `PDF Recibo-Trebol-${numeroRecibo}.pdf descargado exitosamente en calidad de imagen.`);
+                anunciarAccesibilidad(`PDF Recibo-Trebol-${numeroRecibo}.pdf descargado exitosamente en calidad de imagen.`);
                 
                 // Efecto visual de confirmación
                 botonPDF.style.animation = 'none';
                 setTimeout(() => {
-                    botonPDF.style.animation = 'pulse 0.5s';
+                    botonPDF.style.animation = 'float 2s ease-in-out';
                 }, 10);
+                
+                // Registrar descarga en localStorage
+                const descargas = JSON.parse(localStorage.getItem('descargasRecibos') || '[]');
+                descargas.push({
+                    numero: numeroRecibo,
+                    fecha: new Date().toISOString(),
+                    monto: document.getElementById('monto').value
+                });
+                localStorage.setItem('descargasRecibos', JSON.stringify(descargas));
+                
             }).catch(error => {
                 console.error('Error al generar PDF:', error);
                 botonPDF.innerHTML = textoOriginal;
                 botonPDF.disabled = false;
                 generandoPDF = false;
                 
-                mostrarNotificacion('error', 'Error al generar PDF. Intente nuevamente.');
+                mostrarNotificacion('error', 'Error al generar PDF. Intente nuevamente o verifique la conexión.');
                 anunciarAccesibilidad('Error al generar el PDF. Por favor, intente nuevamente.');
+                
+                // Intentar con configuración alternativa
+                setTimeout(() => {
+                    if (confirm('Hubo un error generando el PDF. ¿Desea intentar con configuración estándar?')) {
+                        descargarPDFAlternativo();
+                    }
+                }, 1000);
             });
         }
 
-        // Convertir número a letras (función básica)
+        // Método alternativo para generar PDF
+        function descargarPDFAlternativo() {
+            const elemento = document.getElementById('contenedor-recibo');
+            const opcionesAlt = {
+                margin: [15, 15, 15, 15],
+                filename: `Recibo-Trebol-${numeroRecibo}-alternativo.pdf`,
+                image: { type: 'jpeg', quality: 0.95 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(opcionesAlt).from(elemento).save();
+        }
+
+        // Convertir número a letras (función completa para bolivianos)
         function numeroALetras(numero) {
             const unidades = ['', 'UN', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
             const decenas = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
+            const especiales = ['DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE', 'DIECISEIS', 'DIECISIETE', 'DIECIOCHO', 'DIECINUEVE'];
+            const centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
             
             const entero = Math.floor(numero);
             const decimal = Math.round((numero - entero) * 100);
             
             if (entero === 0) return 'CERO';
-            if (entero < 10) return unidades[entero];
-            if (entero < 100) {
-                const decena = Math.floor(entero / 10);
-                const unidad = entero % 10;
-                if (unidad === 0) return decenas[decena];
-                return `${decenas[decena]} Y ${unidades[unidad]}`;
+            if (entero === 1) return 'UN';
+            if (entero === 100) return 'CIEN';
+            
+            let resultado = '';
+            
+            // Miles
+            if (entero >= 1000) {
+                const miles = Math.floor(entero / 1000);
+                if (miles === 1) {
+                    resultado += 'MIL ';
+                } else {
+                    resultado += numeroALetras(miles) + ' MIL ';
+                }
             }
             
-            return 'CIENTO VEINTITRÉS'; // Simplificado para el ejemplo
+            // Centenas
+            const resto = entero % 1000;
+            if (resto >= 100) {
+                const centena = Math.floor(resto / 100);
+                resultado += centenas[centena] + ' ';
+            }
+            
+            // Decenas y unidades
+            const decenaUnidad = resto % 100;
+            if (decenaUnidad >= 10 && decenaUnidad <= 19) {
+                resultado += especiales[decenaUnidad - 10] + ' ';
+            } else {
+                if (decenaUnidad >= 20) {
+                    const decena = Math.floor(decenaUnidad / 10);
+                    resultado += decenas[decena];
+                    const unidad = decenaUnidad % 10;
+                    if (unidad > 0) {
+                        resultado += ' Y ' + unidades[unidad];
+                    }
+                    resultado += ' ';
+                } else if (decenaUnidad > 0) {
+                    resultado += unidades[decenaUnidad] + ' ';
+                }
+            }
+            
+            resultado = resultado.trim();
+            
+            // Decimales
+            if (decimal > 0) {
+                resultado += ' CON ' + decimal.toString().padStart(2, '0') + '/100';
+            }
+            
+            return resultado + ' BOLIVIANOS';
         }
 
         // Cargar último destinatario del localStorage
@@ -1280,6 +1755,13 @@
             const ultimoDestinatario = localStorage.getItem('ultimoDestinatario');
             if (ultimoDestinatario) {
                 document.getElementById('nombre').value = ultimoDestinatario;
+                // Sugerir datos relacionados si existen
+                const datosGuardados = JSON.parse(localStorage.getItem('datosRecibos') || '{}');
+                if (datosGuardados[ultimoDestinatario]) {
+                    const datos = datosGuardados[ultimoDestinatario];
+                    if (datos.ciNit) document.getElementById('ci-nit').value = datos.ciNit;
+                    if (datos.item) document.getElementById('item').value = datos.item;
+                }
             }
         }
 
@@ -1295,12 +1777,27 @@
             const liveRegion = document.getElementById('aria-live');
             liveRegion.textContent = mensaje;
             
-            // Limpiar después de un tiempo para anuncios nuevos
+            // Limpiar después de un tiempo
             setTimeout(() => {
                 liveRegion.textContent = '';
-            }, 3000);
+            }, 4000);
         }
+
+        // Guardar datos del formulario al cambiar
+        document.getElementById('nombre').addEventListener('blur', function() {
+            const nombre = this.value.trim();
+            if (nombre) {
+                const datosGuardados = JSON.parse(localStorage.getItem('datosRecibos') || '{}');
+                if (!datosGuardados[nombre]) {
+                    datosGuardados[nombre] = {
+                        ciNit: document.getElementById('ci-nit').value,
+                        item: document.getElementById('item').value,
+                        fecha: new Date().toISOString()
+                    };
+                    localStorage.setItem('datosRecibos', JSON.stringify(datosGuardados));
+                }
+            }
+        });
     </script>
 </body>
 </html>
-```
