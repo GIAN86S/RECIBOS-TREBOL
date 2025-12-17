@@ -436,13 +436,17 @@
         }
 
         .logo-recibo {
-            width: 100px;
+            width: 120px;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .logo-recibo img {
             max-width: 80px;
-            height: auto;
+            max-height: 80px;
+            object-fit: contain;
         }
 
         /* Título del recibo */
@@ -1243,8 +1247,16 @@
             contenedorRecibo.innerHTML = reciboHTML;
             
             // Generar código QR con datos del recibo
-            const datosQR = `RECIBO TRÉBOL|N°:${numeroRecibo}|MONTO:${montoFormateado}|FECHA:${document.getElementById('fecha-texto').value}|EMISOR:FRANZ MANGUIA|CI:5045135|LUGAR:YACUIBA`;
-            setTimeout(() => generarQR(datosQR, 'qr-canvas'), 100);
+            const datosQR = [
+                `RECIBO TRÉBOL N°: ${numeroRecibo}`,
+                `FECHA: ${document.getElementById('fecha-texto').value}`,
+                `CLIENTE: ${nombre}`,
+                `CI/NIT: ${ciNit || 'N/A'}`,
+                `MONTO: ${montoFormateado}`,
+                `CONCEPTO: ${item}`,
+                `EMISOR: FRANZ RAFAEL MANGUIA IÑIGUEZ`
+            ].join(' | ');
+            setTimeout(() => generarQR(datosQR, 'qr-canvas'), 200);
             
             // Habilitar botones
             document.getElementById('descargar-pdf').disabled = false;
@@ -1275,26 +1287,22 @@
             
             const elemento = document.getElementById('contenedor-recibo');
             
-            // Configuración para PDF de UNA PÁGINA A4 como imagen
+            // Configuración MEJORADA para PDF A4
             const opciones = {
-                margin: [5, 5, 5, 5], // Márgenes mínimos
+                margin: 0, // Sin márgenes, el CSS del recibo ya los tiene
                 filename: `Recibo-Trebol-${numeroRecibo}.pdf`,
                 image: { 
                     type: 'jpeg', 
                     quality: 0.98
                 },
                 html2canvas: { 
-                    scale: 2, // Escala adecuada para A4
+                    scale: 3, // Mayor escala para máxima calidad de texto e imágenes
                     useCORS: true,
                     logging: false,
-                    backgroundColor: '#FFFFFF',
-                    letterRendering: true,
-                    width: 794, // Ancho exacto A4
-                    height: 1123, // Alto exacto A4
-                    windowWidth: 794
+                    letterRendering: true
                 },
                 jsPDF: { 
-                    unit: 'mm', 
+                    unit: 'pt', // Usar puntos para coincidir con el tamaño en píxeles del recibo
                     format: 'a4', 
                     orientation: 'portrait'
                 }
@@ -1331,6 +1339,12 @@
             const entero = Math.floor(numero);
             const decimal = Math.round((numero - entero) * 100);
             
+            // Manejar números muy grandes para evitar errores de recursión o rendimiento
+            if (entero >= 1e15) { // Límite práctico: mil billones
+                const montoFormateado = new Intl.NumberFormat('es-BO').format(entero);
+                return `IMPORTE DE ${montoFormateado} CON ${decimal.toString().padStart(2, '0')}/100`;
+            }
+
             if (entero === 0) return 'CERO';
             if (entero === 1) return 'UN';
             if (entero === 100) return 'CIEN';
