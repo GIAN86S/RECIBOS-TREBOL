@@ -367,6 +367,7 @@
             height: 80px;
             border: 2px solid var(--border);
             border-radius: 4px;
+            object-fit: contain; /* Esto evita que la imagen se estire feo */
         }
 
         .recibo-nota {
@@ -640,7 +641,7 @@
                         <p style="font-size: 0.85rem; color: #777;">Franz Rafael Manguia Iñiguez</p>
                     </div>
                     <div class="sello-qr">
-                        <div class="sello-img" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #999;">SELLO</div>
+                        <img src="sello.png" alt="Sello" class="sello-img">
                         <canvas id="qrCode" class="qr-code"></canvas>
                     </div>
                 </div>
