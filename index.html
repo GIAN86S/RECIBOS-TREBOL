@@ -847,12 +847,20 @@
             
             setTimeout(async () => {
                 try {
-                    const recibo = document.getElementById('recibo');
+                    const recibo = document.getElementById('recibo');                    
+                    
+                    // Forzar temporalmente el estilo de escritorio para la captura del PDF
+                    recibo.style.width = '794px'; // Ancho A4 en píxeles aprox.
+                    recibo.style.height = '1123px'; // Alto A4 en píxeles aprox.
+                    recibo.style.aspectRatio = '1 / 1.414';
+
                     const canvas = await html2canvas(recibo, {
                         scale: 3,
                         useCORS: true,
                         backgroundColor: '#ffffff'
                     });
+
+                    recibo.style = ''; // Restaurar estilos originales
 
                     const imgData = canvas.toDataURL('image/jpeg', 1.0);
                     
