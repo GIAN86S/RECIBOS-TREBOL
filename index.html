@@ -51,6 +51,11 @@
             min-height: 100vh;
         }
 
+        .logo-section img, .recibo-logo img {
+            background: white; /* Opcional: añade fondo blanco si tu logo es transparente */
+            padding: 2px;
+        }
+
         .header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
@@ -495,9 +500,7 @@
     <header class="header">
         <div class="header-content">
             <div class="logo-section">
-                <div class="logo-circle">
-                    <i class="fas fa-clover"></i>
-                </div>
+                <img src="assets/logo.png" alt="Logo Trébol" style="width: 50px; height: 50px; object-fit: contain;">
                 <div>
                     <h1>Recibo Trébol</h1>
                     <p style="font-size: 0.9rem; opacity: 0.9;">Sistema de Emisión de Recibos Profesionales</p>
@@ -583,9 +586,7 @@
             <div id="recibo" class="recibo">
                 <div class="recibo-header">
                     <div class="recibo-logo">
-                        <div class="recibo-logo-circle">
-                            <i class="fas fa-clover"></i>
-                        </div>
+                        <img src="assets/logo.png" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; border-radius: 50%;">
                         <div class="recibo-info">
                             <h2>FRANZ RAFAEL MANGUIA IÑIGUEZ</h2>
                             <p>Cel: 72971268</p>
