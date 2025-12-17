@@ -3,853 +3,922 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recibo Trébol | Emisión Profesional de Recibos A4</title>
-    <meta name="description" content="Sistema web profesional para la emisión y descarga de recibos en formato A4 (PDF como imagen), diseñado para Bolivia.">
-    <!-- Carga de Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Carga de Google Fonts: Poppins (Texto) y Montserrat (Títulos) -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Carga de Font Awesome para Iconografía -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLMDJ8uR078gB1+K4/t2/j7s1Q2/hB7tU2I9j8Xq2I8wP5wz4q4/gP5wFq5wF+wFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Carga de Librerías Críticas para PDF/QR -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode.js/1.0.0/qrcode.min.js"></script>
+    <title>Recibo Trébol - Sistema de Emisión de Recibos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+    
     <style>
-        /* Tipografía */
-        body { font-family: 'Poppins', sans-serif; }
-        .font-montserrat { font-family: 'Montserrat', sans-serif; }
-
-        /* Variables CSS para Tema Trébol (Verde/Dorado) y Modo Oscuro/Claro */
         :root {
-            --color-primary: #10B981; /* Verde Esmeralda (Trébol) */
-            --color-secondary: #FBBF24; /* Ámbar (Dorado) */
-            --color-text: #1F2937; /* Gris Oscuro */
-            --color-bg: #F9FAFB; /* Fondo Claro */
-            --color-card-bg: #FFFFFF;
-            --color-border: #E5E7EB;
-            --color-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-            --transition-speed: 0.3s;
+            --primary: #2d7a3e;
+            --primary-dark: #1f5a2e;
+            --secondary: #d4af37;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --border: #dee2e6;
+            --success: #28a745;
+            --error: #dc3545;
+            --shadow: rgba(0,0,0,0.1);
         }
 
-        .dark {
-            --color-text: #D1D5DB; /* Gris Claro */
-            --color-bg: #1F2937; /* Fondo Oscuro */
-            --color-card-bg: #374151;
-            --color-border: #4B5563;
-            --color-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.05), 0 2px 4px -2px rgba(255, 255, 255, 0.05);
+        [data-theme="dark"] {
+            --primary: #3a9d4f;
+            --primary-dark: #2d7a3e;
+            --secondary: #f4d03f;
+            --bg-light: #1a1a1a;
+            --bg-white: #2d2d2d;
+            --text-dark: #e0e0e0;
+            --text-light: #b0b0b0;
+            --border: #404040;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            background-color: var(--color-bg);
-            color: var(--color-text);
-            transition: background-color var(--transition-speed), color var(--transition-speed);
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            min-height: 100vh;
         }
 
-        /* Estilo general de tarjetas y botones */
-        .card {
-            background-color: var(--color-card-bg);
-            border: 1px solid var(--color-border);
-            box-shadow: var(--color-shadow);
-            transition: all var(--transition-speed);
-        }
-        .btn-primary {
-            background-color: var(--color-primary);
-            transition: background-color 0.2s;
-        }
-        .btn-primary:hover {
-            background-color: #059669;
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 6px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        /* Estilo específico para el Contenedor A4 y Vista de Impresión */
-        #receipt-a4-container {
-            /* Simular tamaño A4 en pantalla para la previsualización (aproximadamente 794x1123 px a 96dpi) */
-            width: 210mm; /* A4 width */
-            min-height: 297mm; /* A4 height */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave para destacar */
-        }
-        
-        /* Estilos de la cabecera del recibo (Header) */
-        #receipt-a4 .receipt-header {
-            border-bottom: 4px solid var(--color-primary);
-            padding-bottom: 1rem;
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        /* Estilos de tabla en el recibo */
-        #receipt-a4 table {
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-circle {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .theme-toggle {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .form-section, .preview-section {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        label .required {
+            color: var(--error);
+        }
+
+        input, select, textarea {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        #receipt-a4 th, #receipt-a4 td {
-            padding: 0.5rem;
-            text-align: left;
-            border-bottom: 1px dashed var(--color-border);
-        }
-        #receipt-a4 th {
-            font-weight: 600;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--bg-white);
+            color: var(--text-dark);
         }
 
-        /* Estilos del footer */
-        #receipt-a4 .receipt-footer {
-            border-top: 2px dashed var(--color-border);
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45, 122, 62, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
             margin-top: 2rem;
-            padding-top: 1rem;
         }
 
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
 
-        /* MEDIA PRINT: Optimización para impresión A4 real */
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #c5a028;
+            transform: translateY(-2px);
+        }
+
+        .recibo {
+            background: white;
+            padding: 2rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            width: 100%;
+            aspect-ratio: 1/1.414;
+            color: #000;
+            position: relative;
+        }
+
+        .recibo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .recibo-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .recibo-logo-circle {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .recibo-info h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .recibo-info p {
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .recibo-numero {
+            text-align: right;
+        }
+
+        .recibo-numero .numero {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .recibo-titulo {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .recibo-titulo h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .recibo-body {
+            margin: 1.5rem 0;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .info-value {
+            color: #555;
+        }
+
+        .monto-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 2px solid var(--primary);
+        }
+
+        .monto-numero {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .monto-letras {
+            font-size: 1rem;
+            color: #555;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .recibo-footer {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+        }
+
+        .firma-section {
+            text-align: center;
+        }
+
+        .firma-linea {
+            width: 200px;
+            border-top: 2px solid #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .sello-qr {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .sello-img, .qr-code {
+            width: 80px;
+            height: 80px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+        }
+
+        .recibo-nota {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: #777;
+            text-align: center;
+        }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px var(--shadow);
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--error);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .loader {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3000;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .recibo {
+                transform: scale(0.8);
+                transform-origin: top center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .recibo {
+                transform: scale(0.6);
+            }
+            
+            .form-section, .preview-section {
+                padding: 1rem;
+            }
+        }
+
         @media print {
-            body {
-                background: none; /* Eliminar fondo de la app */
-                color: #000; /* Texto negro para impresión */
-                margin: 0;
-                padding: 0;
-                /* Resetear propiedades de modo oscuro para la impresión */
-                --color-text: #000;
-                --color-border: #333;
-                --color-primary: #10B981;
+            body * {
+                visibility: hidden;
             }
-
-            /* Ocultar el formulario y los controles */
-            #control-panel, #action-buttons, #dark-mode-toggle, #notification-toast {
-                display: none !important;
+            
+            .recibo, .recibo * {
+                visibility: visible;
             }
-
-            /* Asegurar que el recibo sea lo único visible y ocupe el A4 completo */
-            #receipt-a4-wrapper {
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                overflow: hidden;
-            }
-
-            #receipt-a4-container {
-                width: 210mm !important;
-                min-height: 297mm !important;
-                margin: 0;
-                box-shadow: none !important;
-                background-color: white !important; /* Fondo blanco forzado */
-                border: none !important;
-                page-break-after: always; /* Si hay varios recibos, fuerza salto de página */
-            }
-
-            /* Forzar visualización de elementos de diseño que usan colores */
-            #receipt-a4 .receipt-header {
-                border-bottom-color: #10B981 !important; /* Mantener color del trébol */
+            
+            .recibo {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                transform: none !important;
+                border: none;
             }
         }
     </style>
 </head>
-<body class="min-h-screen transition-all">
-
-    <!-- Notificación Toast -->
-    <div id="notification-toast" role="alert" aria-live="polite" class="fixed top-5 right-5 z-50 p-4 rounded-lg shadow-lg hidden transition-opacity duration-300 opacity-0">
-        <div class="flex items-center">
-            <i id="notification-icon" class="fa-solid mr-2"></i>
-            <span id="notification-message" class="text-sm font-semibold"></span>
-        </div>
+<body>
+    <div class="loader">
+        <div class="loader-spinner"></div>
     </div>
 
-    <!-- Contenedor Principal (Flex en Desktop) -->
-    <div class="flex flex-col lg:flex-row min-h-screen">
+    <div class="notification"></div>
 
-        <!-- Panel de Control / Formulario (Izquierda) -->
-        <div id="control-panel" class="lg:w-1/3 p-4 md:p-8 border-r border-gray-200 dark:border-gray-700 transition-colors">
-            <header class="mb-6">
-                <h1 class="text-3xl font-montserrat font-black text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-green-700 dark:from-green-400 dark:to-green-600">
-                    RECIBO TRÉBOL
-                </h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Generador de Recibos A4 (Bs)</p>
-            </header>
-
-            <!-- Interruptor Modo Claro/Oscuro -->
-            <button id="dark-mode-toggle" class="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" aria-label="Alternar modo claro y oscuro">
-                <i class="fa-solid fa-moon text-xl text-gray-700 dark:text-gray-300"></i>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-circle">
+                    <i class="fas fa-clover"></i>
+                </div>
+                <div>
+                    <h1>Recibo Trébol</h1>
+                    <p style="font-size: 0.9rem; opacity: 0.9;">Sistema de Emisión de Recibos Profesionales</p>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema">
+                <i class="fas fa-moon" id="theme-icon"></i>
+                <span id="theme-text">Modo Oscuro</span>
             </button>
+        </div>
+    </header>
 
-            <form id="receipt-form" class="space-y-4">
-                <!-- Seccion Número de Recibo -->
-                <div class="card p-4 rounded-xl">
-                    <label for="receipt-number" class="block text-sm font-bold mb-1">
-                        <i class="fa-solid fa-hashtag text-yellow-500"></i> Número de Recibo
-                    </label>
-                    <input type="text" id="receipt-number" name="receipt-number" readonly 
-                           class="w-full text-2xl font-montserrat font-extrabold text-green-600 bg-gray-100 dark:bg-gray-700 border-none rounded-lg p-2 focus:outline-none" 
-                           aria-label="Número de Recibo Autoincremental">
+    <div class="container">
+        <div class="form-section">
+            <h2 class="section-title">
+                <i class="fas fa-edit"></i>
+                Datos del Recibo
+            </h2>
+            
+            <form id="reciboForm">
+                <div class="form-group">
+                    <label for="destinatario">Nombre del Destinatario <span class="required">*</span></label>
+                    <input type="text" id="destinatario" required>
                 </div>
 
-                <!-- Datos del Destinatario -->
-                <div class="card p-5 rounded-xl">
-                    <h2 class="text-lg font-semibold mb-3 border-b pb-2">Datos del Destinatario</h2>
-                    <div>
-                        <label for="recipient-name" class="block text-sm font-medium mb-1 required">Nombre o Razón Social</label>
-                        <input type="text" id="recipient-name" name="recipient-name" required placeholder="Ej: JUAN PEREZ LOPEZ"
-                               class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-green-500 focus:border-green-500 transition-colors">
-                    </div>
-                    <div class="mt-3">
-                        <label for="recipient-ci" class="block text-sm font-medium mb-1 required">CI / NIT</label>
-                        <input type="text" id="recipient-ci" name="recipient-ci" required placeholder="Ej: 12345678 o 0"
-                               class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-green-500 focus:border-green-500 transition-colors">
-                    </div>
+                <div class="form-group">
+                    <label for="ciNit">CI / NIT <span class="required">*</span></label>
+                    <input type="text" id="ciNit" required>
                 </div>
 
-                <!-- Concepto y Detalle -->
-                <div class="card p-5 rounded-xl">
-                    <h2 class="text-lg font-semibold mb-3 border-b pb-2">Concepto y Detalle</h2>
-                    <div>
-                        <label for="concept" class="block text-sm font-medium mb-1 required">Concepto (Tipo de Servicio)</label>
-                        <select id="concept" name="concept" required 
-                                class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-green-500 focus:border-green-500 transition-colors">
-                            <option value="">Seleccione un concepto</option>
-                            <option value="SERVICIOS PROFESIONALES">Servicios Profesionales</option>
-                            <option value="CONSULTORÍA Y ASESORAMIENTO">Consultoría y Asesoramiento</option>
-                            <option value="ALQUILER DE INMUEBLE">Alquiler de Inmueble</option>
-                            <option value="CONSTRUCCIÓN Y OBRA CIVIL">Construcción y Obra Civil</option>
-                            <option value="MANTENIMIENTO DE EQUIPO">Mantenimiento de Equipo</option>
-                            <option value="OTROS SERVICIOS">Otros Servicios</option>
-                        </select>
-                    </div>
-                    <div class="mt-3">
-                        <label for="detail" class="block text-sm font-medium mb-1 required">Detalle Específico del Servicio</label>
-                        <textarea id="detail" name="detail" required rows="3" placeholder="Descripción detallada del servicio o producto entregado."
-                                  class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-green-500 focus:border-green-500 transition-colors"></textarea>
-                    </div>
+                <div class="form-group">
+                    <label for="concepto">Concepto <span class="required">*</span></label>
+                    <select id="concepto" required>
+                        <option value="">Seleccione un concepto</option>
+                        <option value="Pago de Alquiler">Pago de Alquiler</option>
+                        <option value="Servicios Profesionales">Servicios Profesionales</option>
+                        <option value="Consultoría">Consultoría</option>
+                        <option value="Construcción">Construcción</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                        <option value="Venta de Producto">Venta de Producto</option>
+                        <option value="Anticipo">Anticipo</option>
+                        <option value="Otro">Otro</option>
+                    </select>
                 </div>
 
-                <!-- Monto -->
-                <div class="card p-5 rounded-xl">
-                    <h2 class="text-lg font-semibold mb-3 border-b pb-2">Monto Total</h2>
-                    <div>
-                        <label for="amount" class="block text-sm font-medium mb-1 required">Monto (Bs)</label>
-                        <input type="number" id="amount" name="amount" required step="0.01" min="0.01" placeholder="Ej: 1500.50"
-                               class="w-full p-3 text-xl font-bold border-2 border-green-500 rounded-lg bg-white dark:bg-gray-800 focus:ring-green-500 focus:border-green-700 transition-colors">
-                        <p id="amount-in-words-preview" class="mt-2 text-sm italic text-gray-500 dark:text-gray-400"></p>
-                    </div>
+                <div class="form-group">
+                    <label for="detalle">Detalle del Servicio <span class="required">*</span></label>
+                    <textarea id="detalle" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="monto">Monto (Bs) <span class="required">*</span></label>
+                    <input type="number" id="monto" step="0.01" min="0" required>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" onclick="generarRecibo()">
+                        <i class="fas fa-file-alt"></i>
+                        Generar Recibo
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="descargarPDF()">
+                        <i class="fas fa-download"></i>
+                        Descargar PDF
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="imprimirRecibo()">
+                        <i class="fas fa-print"></i>
+                        Imprimir
+                    </button>
+                    <button type="reset" class="btn btn-secondary" onclick="limpiarFormulario()">
+                        <i class="fas fa-eraser"></i>
+                        Limpiar
+                    </button>
                 </div>
             </form>
-
-            <!-- Botones de Acción -->
-            <div id="action-buttons" class="mt-6 flex flex-col space-y-3">
-                <button id="generate-pdf-btn" class="btn-primary flex items-center justify-center text-white font-bold py-3 px-4 rounded-xl shadow-md disabled:opacity-50" aria-label="Generar y Descargar Recibo en PDF">
-                    <i class="fa-solid fa-file-pdf mr-2"></i> Generar y Descargar PDF
-                </button>
-                <button id="print-btn" class="bg-gray-500 hover:bg-gray-600 flex items-center justify-center text-white font-bold py-3 px-4 rounded-xl shadow-md disabled:opacity-50" aria-label="Imprimir Recibo">
-                    <i class="fa-solid fa-print mr-2"></i> Imprimir Recibo
-                </button>
-            </div>
-            
-            <p class="text-xs text-center mt-4 text-gray-400 dark:text-gray-600">
-                <i class="fa-solid fa-lock"></i> Todos los datos se procesan localmente en su navegador.
-            </p>
         </div>
 
-        <!-- Vista Previa del Recibo (Derecha) -->
-        <div id="receipt-a4-wrapper" class="lg:w-2/3 p-4 md:p-8 lg:p-12 flex justify-center items-start lg:min-h-screen">
-            <!-- Loader para PDF -->
-            <div id="loader" class="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center z-40 hidden rounded-xl" aria-live="polite">
-                <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-green-500"></div>
-                <p class="mt-4 text-white text-lg">Generando PDF de calidad profesional...</p>
-                <p class="text-sm text-gray-300 mt-2">No editable - Espere un momento.</p>
-            </div>
+        <div class="preview-section">
+            <h2 class="section-title">
+                <i class="fas fa-eye"></i>
+                Vista Previa del Recibo
+            </h2>
             
-            <!-- Contenedor del Recibo A4 -->
-            <div id="receipt-a4-container" class="card p-6 md:p-10 w-full max-w-[210mm]">
-                <div id="receipt-a4" class="text-gray-900 dark:text-gray-900 bg-white p-4 md:p-8 space-y-4 text-sm" style="height: 100%;">
-                    
-                    <!-- ENCABEZADO -->
-                    <div class="receipt-header flex justify-between items-start mb-6">
-                        <!-- Izquierda: Logo y Datos Emisor -->
-                        <div class="flex items-center space-x-4">
-                            <!-- Placeholder de Logo -->
-                            <img src="assets/logo.png" onerror="this.onerror=null;this.src='https://placehold.co/80x80/10B981/ffffff?text=TRÉBOL'" alt="Logo Recibo Trébol" class="w-20 h-20 rounded-full shadow-lg border-2 border-green-500">
-                            <div>
-                                <p class="font-montserrat text-xl font-black text-green-700">FRANZ RAFAEL MANGUIA IÑIGUEZ</p>
-                                <p class="text-xs">CI: 5.045.135</p>
-                                <p class="text-xs">Celular: 72971268</p>
-                                <p class="text-xs font-semibold text-green-600">Ubicación: Barrio San Gerónimo, YACUIBA - TARIJA - BOLIVIA</p>
-                            </div>
+            <div id="recibo" class="recibo">
+                <div class="recibo-header">
+                    <div class="recibo-logo">
+                        <div class="recibo-logo-circle">
+                            <i class="fas fa-clover"></i>
                         </div>
-
-                        <!-- Derecha: Número de Recibo -->
-                        <div class="text-right">
-                            <h2 class="text-2xl font-montserrat font-bold text-gray-700">RECIBO N°</h2>
-                            <p id="preview-number" class="text-5xl font-montserrat font-extrabold text-green-600 mt-1">000001</p>
-                            <p class="text-xs font-semibold text-red-500 mt-2">ID Transacción: <span id="preview-transaction-id"></span></p>
+                        <div class="recibo-info">
+                            <h2>FRANZ RAFAEL MANGUIA IÑIGUEZ</h2>
+                            <p>CI: 5.045.135 • Cel: 72971268</p>
+                            <p>Barrio San Gerónimo, YACUIBA - TARIJA - BOLIVIA</p>
                         </div>
                     </div>
-                    
-                    <h1 class="text-center text-4xl font-montserrat font-extrabold text-green-700 border-b-4 border-yellow-500 pb-2 mb-6 tracking-wider">
-                        RECIBO
-                    </h1>
-
-                    <!-- CUERPO - Información Principal -->
-                    <div class="border border-gray-300 p-4 rounded-lg bg-gray-50/50">
-                        <table class="text-sm">
-                            <tr class="!border-none">
-                                <th class="w-1/4">RECIBÍ DE:</th>
-                                <td id="preview-recipient-name" class="font-bold uppercase"></td>
-                            </tr>
-                            <tr>
-                                <th>C.I. / N.I.T.:</th>
-                                <td id="preview-recipient-ci"></td>
-                            </tr>
-                            <tr>
-                                <th>FECHA Y HORA:</th>
-                                <td id="preview-date-time"></td>
-                            </tr>
-                            <tr>
-                                <th>CONCEPTO:</th>
-                                <td id="preview-concept" class="font-semibold text-green-700 uppercase"></td>
-                            </tr>
-                        </table>
+                    <div class="recibo-numero">
+                        <p style="font-size: 0.9rem; color: #777;">Recibo N°</p>
+                        <div class="numero" id="numeroRecibo">00001</div>
                     </div>
+                </div>
 
-                    <!-- Detalle y Monto -->
-                    <div class="mt-6 border border-gray-300 p-4 rounded-lg">
-                        <h3 class="text-base font-bold mb-2 text-green-700 border-b pb-1">DETALLE DEL SERVICIO</h3>
-                        <p id="preview-detail" class="text-justify italic whitespace-pre-line"></p>
+                <div class="recibo-titulo">
+                    <h1>RECIBO</h1>
+                </div>
+
+                <div class="recibo-body">
+                    <div class="info-row">
+                        <div class="info-label">Recibí de:</div>
+                        <div class="info-value" id="previewDestinatario">-</div>
                     </div>
-
-                    <div class="mt-6">
-                        <table class="border border-gray-400">
-                            <tr class="bg-green-100">
-                                <th class="w-1/4 text-center border-r border-gray-400">MONTO EN NÚMEROS</th>
-                                <td id="preview-amount-num" class="text-4xl font-montserrat font-black text-right pr-4 text-green-800">Bs 0,00</td>
-                            </tr>
-                            <tr>
-                                <th class="w-1/4 text-center border-r border-gray-400">MONTO EN LETRAS</th>
-                                <td id="preview-amount-words" class="text-lg font-semibold italic uppercase">SON CERO 0/100 BOLIVIANOS</td>
-                            </tr>
-                        </table>
+                    <div class="info-row">
+                        <div class="info-label">CI / NIT:</div>
+                        <div class="info-value" id="previewCiNit">-</div>
                     </div>
-                    
-                    <!-- Separador de Contenido -->
-                    <div class="pt-6"></div>
-
-                    <!-- PIE - Sellos, QR y Firmas -->
-                    <div class="receipt-footer flex justify-between items-end mt-auto pt-6">
-                        <!-- Izquierda: Sello Digital y QR -->
-                        <div class="flex items-start space-x-6">
-                            <!-- Placeholder de Sello -->
-                            <img src="assets/sello.png" onerror="this.onerror=null;this.src='https://placehold.co/120x120/FBBF24/ffffff?text=SELLO'" alt="Sello Digital Oficial" class="w-32 h-32 opacity-70">
-                            
-                            <!-- Contenedor QR -->
-                            <div class="text-center">
-                                <p class="text-xs font-bold mb-1">CÓDIGO DE VERIFICACIÓN</p>
-                                <div id="qrcode-container" class="p-1 border border-gray-400 bg-white">
-                                    <!-- QR Code will be drawn here -->
-                                </div>
-                                <p class="text-xs mt-1 text-gray-500">Escanee para verificar</p>
-                            </div>
-                        </div>
-
-                        <!-- Derecha: Firma y Autorización -->
-                        <div class="text-center w-64 pt-10">
-                            <div class="border-t border-gray-700"></div>
-                            <p class="font-semibold text-sm mt-2">FRANZ RAFAEL MANGUIA IÑIGUEZ</p>
-                            <p class="text-xs text-gray-600">EMISOR AUTORIZADO</p>
-                            <p class="text-xs mt-4 font-bold">LUGAR DE EMISIÓN:</p>
-                            <p class="text-xs text-green-700">YACUIBA - TARIJA - BOLIVIA</p>
-                        </div>
+                    <div class="info-row">
+                        <div class="info-label">Concepto:</div>
+                        <div class="info-value" id="previewConcepto">-</div>
                     </div>
-
-                    <!-- Nota Legal -->
-                    <div class="text-center mt-6 text-xs text-red-600 pt-2 border-t border-red-300">
-                        <p>NOTA: Este es un recibo digital válido y no editable. La autenticidad puede verificarse mediante el Código QR.</p>
+                    <div class="info-row">
+                        <div class="info-label">Detalle:</div>
+                        <div class="info-value" id="previewDetalle">-</div>
                     </div>
+                    <div class="info-row">
+                        <div class="info-label">Fecha:</div>
+                        <div class="info-value" id="previewFecha">-</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">ID Transacción:</div>
+                        <div class="info-value" id="previewId">-</div>
+                    </div>
+                </div>
 
+                <div class="monto-section">
+                    <div class="monto-numero" id="previewMonto">Bs 0,00</div>
+                    <div class="monto-letras" id="previewMontoLetras">CERO BOLIVIANOS 00/100</div>
+                </div>
+
+                <div class="recibo-footer">
+                    <div class="firma-section">
+                        <div class="firma-linea"></div>
+                        <p style="font-weight: 600;">Firma y Sello</p>
+                        <p style="font-size: 0.85rem; color: #777;">Franz Rafael Manguia Iñiguez</p>
+                    </div>
+                    <div class="sello-qr">
+                        <div class="sello-img" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #999;">SELLO</div>
+                        <canvas id="qrCode" class="qr-code"></canvas>
+                    </div>
+                </div>
+
+                <div class="recibo-nota">
+                    <p><strong>Lugar de emisión:</strong> YACUIBA - TARIJA - BOLIVIA</p>
+                    <p style="margin-top: 0.5rem;">Este recibo tiene validez legal. Conserve este documento para futuras referencias.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Script de la Aplicación -->
     <script>
-        const SENDER_DATA = {
-            name: "FRANZ RAFAEL MANGUIA IÑIGUEZ",
-            ci: "5.045.135",
-            phone: "72971268",
-            location: "Barrio San Gerónimo, YACUIBA - TARIJA - BOLIVIA",
-            city: "YACUIBA",
-            country: "BOLIVIA"
-        };
+        // Configuración inicial
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateThemeUI();
 
-        const TIMEZONE = 'America/La_Paz';
-        const APP_ID = 'RECIBO_TREBOL'; // Usado para localStorage keys
+        // Inicializar número de recibo
+        let numeroRecibo = parseInt(localStorage.getItem('numeroRecibo')) || 1;
+        document.getElementById('numeroRecibo').textContent = numeroRecibo.toString().padStart(5, '0');
 
-        // ---------------------------------------------------------------------
-        // 1. UTILIDADES Y CONVERSIÓN DE NÚMEROS A LETRAS
-        // ---------------------------------------------------------------------
+        // Actualizar fecha cada 30 segundos
+        setInterval(actualizarFecha, 30000);
+        actualizarFecha();
 
-        /**
-         * Función compleja para convertir un número (monto) a palabras en español (Bolivianos).
-         * Soporta hasta millones con decimales (centavos).
-         * @param {number} num - El monto a convertir.
-         * @returns {string} El monto en letras.
-         */
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('theme', currentTheme);
+            updateThemeUI();
+        }
+
+        function updateThemeUI() {
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            if (currentTheme === 'dark') {
+                icon.className = 'fas fa-sun';
+                text.textContent = 'Modo Claro';
+            } else {
+                icon.className = 'fas fa-moon';
+                text.textContent = 'Modo Oscuro';
+            }
+        }
+
+        function actualizarFecha() {
+            const fecha = new Date();
+            const opciones = { 
+                timeZone: 'America/La_Paz',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            const fechaFormateada = fecha.toLocaleDateString('es-BO', opciones);
+            document.getElementById('previewFecha').textContent = fechaFormateada;
+        }
+
         function numeroALetras(num) {
-            const unidades = ['', 'UN', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
-            const decenas = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
-            const especiales = ['DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE', 'DIECISEIS', 'DIECISIETE', 'DIECIOCHO', 'DIECINUEVE'];
-            const centenas = ['', 'CIEN', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
+            const unidades = ['', 'UNO', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
+            const decenas = ['', '', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
+            const especiales = ['DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE', 'DIECISÉIS', 'DIECISIETE', 'DIECIOCHO', 'DIECINUEVE'];
+            const centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
 
-            const toText = (n, isMil) => {
-                let s = '';
-                const h = Math.floor(n / 100);
-                const t = Math.floor((n % 100) / 10);
-                const u = n % 10;
+            if (num === 0) return 'CERO';
+            if (num === 100) return 'CIEN';
 
-                // 1. Centenas
-                if (h > 0) {
-                    if (h === 1 && t === 0 && u === 0) {
-                        s += 'CIEN';
-                    } else {
-                        s += centenas[h] + ' ';
+            let letras = '';
+            
+            // Millones
+            if (num >= 1000000) {
+                const millones = Math.floor(num / 1000000);
+                letras += (millones === 1 ? 'UN MILLÓN' : numeroALetras(millones) + ' MILLONES') + ' ';
+                num %= 1000000;
+            }
+
+            // Miles
+            if (num >= 1000) {
+                const miles = Math.floor(num / 1000);
+                letras += (miles === 1 ? 'MIL' : numeroALetras(miles) + ' MIL') + ' ';
+                num %= 1000;
+            }
+
+            // Centenas
+            if (num >= 100) {
+                letras += centenas[Math.floor(num / 100)] + ' ';
+                num %= 100;
+            }
+
+            // Decenas y unidades
+            if (num >= 20) {
+                letras += decenas[Math.floor(num / 10)];
+                if (num % 10 > 0) {
+                    letras += ' Y ' + unidades[num % 10];
+                }
+            } else if (num >= 10) {
+                letras += especiales[num - 10];
+            } else if (num > 0) {
+                letras += unidades[num];
+            }
+
+            return letras.trim();
+        }
+
+        function formatearMonto(monto) {
+            const partes = parseFloat(monto).toFixed(2).split('.');
+            const enteros = parseInt(partes[0]);
+            const decimales = partes[1];
+            
+            const enterosLetras = numeroALetras(enteros);
+            return `${enterosLetras} BOLIVIANOS ${decimales}/100`;
+        }
+
+        function generarQR(data) {
+            const qr = qrcode(0, 'M');
+            qr.addData(data);
+            qr.make();
+            
+            const canvas = document.getElementById('qrCode');
+            const ctx = canvas.getContext('2d');
+            const moduleCount = qr.getModuleCount();
+            const cellSize = 80 / moduleCount;
+            
+            canvas.width = 80;
+            canvas.height = 80;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 80, 80);
+            
+            ctx.fillStyle = '#000000';
+            for (let row = 0; row < moduleCount; row++) {
+                for (let col = 0; col < moduleCount; col++) {
+                    if (qr.isDark(row, col)) {
+                        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
                     }
                 }
-
-                // 2. Decenas y Unidades
-                if (t > 0 || u > 0) {
-                    let part = n % 100;
-                    if (h > 0 && part > 0 && h !== 1) s += ' ';
-
-                    if (part < 10 && part > 0) { // 1 a 9
-                        s += unidades[part];
-                    } else if (part < 20) { // 10 a 19
-                        s += especiales[part - 10];
-                    } else if (part === 20) { // 20
-                        s += 'VEINTE';
-                    } else if (part < 30) { // 21 a 29
-                        s += 'VEINTI' + unidades[u];
-                    } else if (u === 0) { // 30, 40, 50...
-                        s += decenas[t];
-                    } else { // 31 a 99
-                        s += decenas[t] + ' Y ' + unidades[u];
-                    }
-                }
-                
-                // Excepción para "UN MIL" vs "MIL"
-                if (isMil && s.trim() === 'UN') s = '';
-
-                return s.trim();
-            };
-
-            if (isNaN(num) || num === 0) return 'CERO 0/100 BOLIVIANOS';
-            if (num > 999999999.99) return 'Monto demasiado grande para convertir';
-
-            // Separar parte entera y decimal
-            const partes = num.toFixed(2).split('.');
-            let entero = parseInt(partes[0], 10);
-            const decimal = partes.length > 1 ? partes[1] : '00';
-            
-            let resultado = '';
-
-            // 1. MILLONES
-            const millones = Math.floor(entero / 1000000);
-            if (millones > 0) {
-                resultado += (millones === 1 ? 'UN MILLÓN ' : toText(millones) + ' MILLONES ');
-                entero %= 1000000;
             }
-
-            // 2. MILES
-            const miles = Math.floor(entero / 1000);
-            if (miles > 0) {
-                resultado += (miles === 1 ? 'MIL ' : toText(miles, true) + ' MIL ');
-                entero %= 1000;
-            }
-
-            // 3. CIENTOS
-            if (entero > 0) {
-                resultado += toText(entero) + ' ';
-            }
-
-            // 4. MONEDA
-            resultado = resultado.trim();
-            if (resultado === 'UN') { // 1.00
-                resultado = 'UN BOLIVIANO';
-            } else if (resultado.length > 0) {
-                resultado += ' BOLIVIANOS';
-            } else {
-                resultado = 'CERO BOLIVIANOS';
-            }
-
-            // 5. DECIMALES (CENTAVOS)
-            resultado += ` ${decimal}/100`;
-
-            return resultado.toUpperCase();
         }
 
-        /**
-         * Formatea un número como moneda boliviana (Bs 1.500,50).
-         * @param {number} num - El monto.
-         * @returns {string} El monto formateado.
-         */
-        function formatCurrency(num) {
-            if (isNaN(num)) return 'Bs 0,00';
-            return 'Bs ' + parseFloat(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        }
+        function generarRecibo() {
+            const destinatario = document.getElementById('destinatario').value;
+            const ciNit = document.getElementById('ciNit').value;
+            const concepto = document.getElementById('concepto').value;
+            const detalle = document.getElementById('detalle').value;
+            const monto = document.getElementById('monto').value;
 
-        /**
-         * Genera un ID de transacción único.
-         * @returns {string} ID único (UUID v4 simplificado).
-         */
-        function generateTransactionId() {
-            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-            ).toUpperCase();
-        }
-
-        /**
-         * Sanitiza el texto para prevenir XSS básico al insertarlo en el DOM.
-         * @param {string} str - El string a sanitizar.
-         * @returns {string} El string sanitizado.
-         */
-        function sanitizeInput(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
-        // ---------------------------------------------------------------------
-        // 2. PERSISTENCIA (localStorage) y AUTOGENERACIÓN
-        // ---------------------------------------------------------------------
-
-        /**
-         * Obtiene el último número de recibo usado y lo incrementa.
-         * @returns {string} El nuevo número de recibo formateado (00000X).
-         */
-        function getNewReceiptNumber() {
-            let currentNumber = parseInt(localStorage.getItem(`${APP_ID}_receipt_number`) || '1', 10);
-            return String(currentNumber).padStart(6, '0');
-        }
-
-        /**
-         * Guarda el nuevo número de recibo incrementado.
-         */
-        function incrementReceiptNumber() {
-            let currentNumber = parseInt(localStorage.getItem(`${APP_ID}_receipt_number`) || '1', 10);
-            localStorage.setItem(`${APP_ID}_receipt_number`, currentNumber + 1);
-        }
-
-        /**
-         * Muestra una notificación temporal.
-         * @param {string} message - Mensaje a mostrar.
-         * @param {'success'|'error'} type - Tipo de notificación.
-         */
-        function showNotification(message, type) {
-            const toast = document.getElementById('notification-toast');
-            const icon = document.getElementById('notification-icon');
-            const msg = document.getElementById('notification-message');
-
-            toast.classList.remove('hidden', 'opacity-0', 'bg-red-500', 'bg-green-500');
-            toast.classList.add('opacity-100');
-
-            if (type === 'success') {
-                toast.classList.add('bg-green-500', 'text-white');
-                icon.className = 'fa-solid fa-check-circle';
-            } else {
-                toast.classList.add('bg-red-500', 'text-white');
-                icon.className = 'fa-solid fa-triangle-exclamation';
-            }
-
-            msg.textContent = message;
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100');
-                toast.classList.add('opacity-0');
-                setTimeout(() => toast.classList.add('hidden'), 300);
-            }, 5000);
-        }
-
-        // ---------------------------------------------------------------------
-        // 3. LÓGICA DE LA INTERFAZ Y EVENTOS
-        // ---------------------------------------------------------------------
-
-        const form = document.getElementById('receipt-form');
-        const receiptContainer = document.getElementById('receipt-a4');
-        const numberInput = document.getElementById('receipt-number');
-        const amountInput = document.getElementById('amount');
-        const pdfBtn = document.getElementById('generate-pdf-btn');
-        const printBtn = document.getElementById('print-btn');
-        const loader = document.getElementById('loader');
-        let currentTransactionId = generateTransactionId();
-
-        /**
-         * Carga los datos guardados en localStorage.
-         */
-        function loadState() {
-            // Cargar número de recibo
-            numberInput.value = getNewReceiptNumber();
-
-            // Cargar último destinatario (Autoguardado)
-            const savedRecipientName = localStorage.getItem(`${APP_ID}_recipient_name`);
-            const savedRecipientCI = localStorage.getItem(`${APP_ID}_recipient_ci`);
-
-            if (savedRecipientName) {
-                document.getElementById('recipient-name').value = savedRecipientName;
-            }
-            if (savedRecipientCI) {
-                document.getElementById('recipient-ci').value = savedRecipientCI;
-            }
-
-            // Cargar preferencia de Dark Mode
-            const isDark = localStorage.getItem(`${APP_ID}_dark_mode`) === 'true';
-            document.documentElement.classList.toggle('dark', isDark);
-            updateDarkModeToggleIcon(isDark);
-        }
-
-        /**
-         * Guarda el último destinatario y la preferencia de Dark Mode.
-         */
-        function saveState() {
-            localStorage.setItem(`${APP_ID}_recipient_name`, document.getElementById('recipient-name').value);
-            localStorage.setItem(`${APP_ID}_recipient_ci`, document.getElementById('recipient-ci').value);
-            // No guardamos el resto del formulario, solo el destinatario.
-        }
-
-        /**
-         * Actualiza el display de fecha y hora.
-         */
-        function updateDateTime() {
-            const date = new Date();
-            const options = { 
-                year: 'numeric', month: 'long', day: 'numeric', 
-                hour: '2-digit', minute: '2-digit', second: '2-digit', 
-                timeZone: TIMEZONE, 
-                hour12: false 
-            };
-            const formattedDate = date.toLocaleString('es-BO', options);
-            document.getElementById('preview-date-time').textContent = formattedDate;
-        }
-
-        /**
-         * Genera el Código QR con los datos principales del recibo.
-         * @param {object} data - Datos del recibo.
-         */
-        function generateQR(data) {
-            const qrContainer = document.getElementById('qrcode-container');
-            qrContainer.innerHTML = ''; // Limpiar previo
-
-            const qrData = JSON.stringify({
-                Nro: data.receiptNumber,
-                Monto: data.amount.toFixed(2),
-                CI_NIT: data.recipientCI,
-                Dest: data.recipientName,
-                Emisor: SENDER_DATA.ci,
-                ID: data.transactionId
-            });
-
-            // Usar qrcode.js
-            new QRCode(qrContainer, {
-                text: qrData,
-                width: 100,
-                height: 100,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
-            });
-        }
-
-        /**
-         * Actualiza la previsualización del recibo con los datos del formulario.
-         */
-        function updatePreview() {
-            const data = {
-                receiptNumber: numberInput.value,
-                recipientName: sanitizeInput(document.getElementById('recipient-name').value) || '______________________________',
-                recipientCI: sanitizeInput(document.getElementById('recipient-ci').value) || '__________________',
-                concept: sanitizeInput(document.getElementById('concept').value) || '______________________________',
-                detail: sanitizeInput(document.getElementById('detail').value) || '________________________________________________________________________________',
-                amount: parseFloat(amountInput.value) || 0,
-                transactionId: currentTransactionId
-            };
-            
-            // 1. Campos
-            document.getElementById('preview-number').textContent = data.receiptNumber;
-            document.getElementById('preview-recipient-name').textContent = data.recipientName;
-            document.getElementById('preview-recipient-ci').textContent = data.recipientCI;
-            document.getElementById('preview-concept').textContent = data.concept;
-            document.getElementById('preview-detail').textContent = data.detail;
-            document.getElementById('preview-transaction-id').textContent = data.transactionId;
-
-            // 2. Monto
-            const amountFormatted = formatCurrency(data.amount);
-            document.getElementById('preview-amount-num').textContent = amountFormatted;
-            document.getElementById('preview-amount-words').textContent = numeroALetras(data.amount);
-            document.getElementById('amount-in-words-preview').textContent = `Son: ${numeroALetras(data.amount)}`;
-            
-            // 3. QR Code
-            generateQR(data);
-
-            // 4. Autoguardado de destinatario
-            saveState();
-
-            // 5. Botones (habilitar/deshabilitar)
-            const isFormValid = form.checkValidity();
-            pdfBtn.disabled = !isFormValid;
-            printBtn.disabled = !isFormValid;
-            
-            // Re-aplicar color de texto forzado a negro en el recibo (para evitar herencia de dark mode)
-            receiptContainer.style.color = '#000';
-            receiptContainer.style.backgroundColor = '#fff';
-        }
-
-        /**
-         * Genera el PDF del recibo como imagen (no editable).
-         */
-        async function handleGeneratePDF() {
-            if (!form.checkValidity()) {
-                form.reportValidity();
-                showNotification("Por favor, complete todos los campos obligatorios.", 'error');
+            if (!destinatario || !ciNit || !concepto || !detalle || !monto) {
+                mostrarNotificacion('Por favor complete todos los campos', 'error');
                 return;
             }
 
-            loader.classList.remove('hidden');
-
-            try {
-                // 1. Configuración de renderizado (Forzar fondo blanco)
-                const receiptElement = document.getElementById('receipt-a4-container');
-                
-                // Forzar el modo claro en el elemento para la captura
-                receiptElement.style.backgroundColor = 'white';
-                receiptElement.classList.remove('dark');
-                receiptContainer.style.color = '#000';
-
-                // 2. Generar canvas/imagen
-                const canvas = await html2canvas(receiptElement, {
-                    scale: 3, // Mayor escala para mayor calidad
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: '#ffffff'
-                });
-
-                // 3. Crear PDF con jsPDF
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4'); // 'p' (portrait), 'mm', 'a4'
-
-                const imgData = canvas.toDataURL('image/jpeg', 1.0); // 1.0 = máxima calidad JPEG
-                
-                // Calcular dimensiones para que la imagen ocupe el A4 completo
-                const imgWidth = 210; // A4 width in mm
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                
-                pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-
-                // 4. Guardar y notificar
-                const receiptNumber = numberInput.value;
-                pdf.save(`Recibo-Trebol-${receiptNumber}.pdf`);
-
-                // 5. Incrementar número y generar nuevo ID
-                incrementReceiptNumber();
-                numberInput.value = getNewReceiptNumber();
-                currentTransactionId = generateTransactionId();
-                
-                updatePreview(); // Actualizar la vista con el nuevo número/ID
-
-                showNotification(`¡Recibo N° ${receiptNumber} generado y descargado con éxito!`, 'success');
-
-            } catch (error) {
-                console.error("Error al generar PDF:", error);
-                showNotification(`Error: No se pudo generar el PDF. ${error.message}`, 'error');
-            } finally {
-                loader.classList.add('hidden');
-                // Restaurar el modo oscuro si estaba activo
-                if (document.documentElement.classList.contains('dark')) {
-                    receiptElement.classList.add('dark');
-                    receiptContainer.style.color = '#000'; // El fondo del A4 siempre debe ser blanco
-                }
-            }
-        }
-        
-        /**
-         * Maneja el evento de impresión directa.
-         */
-        function handlePrint() {
-            if (!form.checkValidity()) {
-                form.reportValidity();
-                showNotification("Por favor, complete todos los campos obligatorios.", 'error');
-                return;
-            }
-
-            const receiptNumber = numberInput.value;
+            // Actualizar vista previa
+            document.getElementById('previewDestinatario').textContent = destinatario;
+            document.getElementById('previewCiNit').textContent = ciNit;
+            document.getElementById('previewConcepto').textContent = concepto;
+            document.getElementById('previewDetalle').textContent = detalle;
             
-            // Forzar el recibo a modo de impresión
-            const receiptElement = document.getElementById('receipt-a4-container');
-            receiptElement.style.backgroundColor = 'white';
-            receiptContainer.style.color = '#000';
+            const montoFormateado = parseFloat(monto).toLocaleString('es-BO', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.getElementById('previewMonto').textContent = `Bs ${montoFormateado}`;
+            document.getElementById('previewMontoLetras').textContent = formatearMonto(monto);
 
+            // Generar ID único
+            const idTransaccion = `RT-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+            document.getElementById('previewId').textContent = idTransaccion;
+
+            // Generar QR
+            const qrData = `Recibo N° ${numeroRecibo.toString().padStart(5, '0')}\nDestinatario: ${destinatario}\nCI/NIT: ${ciNit}\nMonto: Bs ${montoFormateado}\nID: ${idTransaccion}`;
+            generarQR(qrData);
+
+            // Guardar en localStorage
+            localStorage.setItem('ultimoDestinatario', destinatario);
+            localStorage.setItem('ultimoCiNit', ciNit);
+
+            mostrarNotificacion('Recibo generado exitosamente', 'success');
+        }
+
+        function descargarPDF() {
+            mostrarLoader(true);
+            
+            setTimeout(async () => {
+                try {
+                    const recibo = document.getElementById('recibo');
+                    const canvas = await html2canvas(recibo, {
+                        scale: 3,
+                        useCORS: true,
+                        backgroundColor: '#ffffff'
+                    });
+
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    
+                    const imgWidth = 210;
+                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                    
+                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                    pdf.save(`Recibo-Trebol-${numeroRecibo.toString().padStart(5, '0')}.pdf`);
+
+                    // Incrementar número de recibo
+                    numeroRecibo++;
+                    localStorage.setItem('numeroRecibo', numeroRecibo);
+                    document.getElementById('numeroRecibo').textContent = numeroRecibo.toString().padStart(5, '0');
+
+                    mostrarNotificacion('PDF descargado exitosamente', 'success');
+                } catch (error) {
+                    console.error('Error al generar PDF:', error);
+                    mostrarNotificacion('Error al generar PDF', 'error');
+                } finally {
+                    mostrarLoader(false);
+                }
+            }, 100);
+        }
+
+        function imprimirRecibo() {
             window.print();
-
-            // Incrementar número y generar nuevo ID
-            incrementReceiptNumber();
-            numberInput.value = getNewReceiptNumber();
-            currentTransactionId = generateTransactionId();
-
-            updatePreview(); // Actualizar la vista con el nuevo número/ID
-            showNotification(`Preparando Recibo N° ${receiptNumber} para impresión.`, 'success');
-
-            // La restauración de colores se maneja en el CSS media query, pero restauramos el color del div
-            if (document.documentElement.classList.contains('dark')) {
-                receiptContainer.style.color = '#000';
-            }
         }
-        
-        /**
-         * Alterna el modo oscuro y guarda la preferencia.
-         * @param {boolean} isDark - Indica si el modo oscuro está activo.
-         */
-        function updateDarkModeToggleIcon(isDark) {
-            const toggleIcon = document.querySelector('#dark-mode-toggle i');
-            if (isDark) {
-                toggleIcon.classList.remove('fa-moon');
-                toggleIcon.classList.add('fa-sun');
-            } else {
-                toggleIcon.classList.remove('fa-sun');
-                toggleIcon.classList.add('fa-moon');
-            }
+
+        function limpiarFormulario() {
+            document.getElementById('reciboForm').reset();
+            document.getElementById('previewDestinatario').textContent = '-';
+            document.getElementById('previewCiNit').textContent = '-';
+            document.getElementById('previewConcepto').textContent = '-';
+            document.getElementById('previewDetalle').textContent = '-';
+            document.getElementById('previewMonto').textContent = 'Bs 0,00';
+            document.getElementById('previewMontoLetras').textContent = 'CERO BOLIVIANOS 00/100';
+            document.getElementById('previewId').textContent = '-';
+            
+            const canvas = document.getElementById('qrCode');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            mostrarNotificacion('Formulario limpiado', 'success');
         }
-        
-        // ---------------------------------------------------------------------
-        // 4. INICIALIZACIÓN
-        // ---------------------------------------------------------------------
 
-        window.onload = function() {
-            loadState(); // Cargar estado (número de recibo, destinatario, dark mode)
-            updateDateTime(); // Establecer la hora inicial
-            updatePreview(); // Generar la primera vista previa
-
-            // Event Listeners
-            form.addEventListener('input', updatePreview);
-            amountInput.addEventListener('change', updatePreview); // El change garantiza que el valor sea flotante
-
-            pdfBtn.addEventListener('click', handleGeneratePDF);
-            printBtn.addEventListener('click', handlePrint);
-
-            // Temporizador para actualización de fecha y hora (cada 30 segundos)
-            setInterval(updateDateTime, 30000);
-
-            // Dark Mode Toggle
-            document.getElementById('dark-mode-toggle').addEventListener('click', () => {
-                const isDark = document.documentElement.classList.toggle('dark');
-                localStorage.setItem(`${APP_ID}_dark_mode`, isDark);
-                updateDarkModeToggleIcon(isDark);
-                updatePreview(); // Refrescar el QR y la vista
-            });
+        function mostrarNotificacion(mensaje, tipo) {
+            const notif = document.querySelector('.notification');
+            notif.textContent = mensaje;
+            notif.className = `notification ${tipo}`;
+            notif.style.display = 'block';
             
-            // Inicializar botones deshabilitados si el formulario no es válido
-            pdfBtn.disabled = !form.checkValidity();
-            printBtn.disabled = !form.checkValidity();
+            setTimeout(() => {
+                notif.style.display = 'none';
+            }, 3000);
+        }
+
+        function mostrarLoader(mostrar) {
+            document.querySelector('.loader').style.display = mostrar ? 'block' : 'none';
+        }
+
+        // Cargar último destinatario si existe
+        window.addEventListener('load', () => {
+            const ultimoDestinatario = localStorage.getItem('ultimoDestinatario');
+            const ultimoCiNit = localStorage.getItem('ultimoCiNit');
             
-            // Forzar primer check de validación para campos requeridos
-            form.querySelectorAll('[required]').forEach(input => {
-                input.addEventListener('blur', () => input.reportValidity());
-            });
+            if (ultimoDestinatario) {
+                document.getElementById('destinatario').value = ultimoDestinatario;
+            }
+            if (ultimoCiNit) {
+                document.getElementById('ciNit').value = ultimoCiNit;
+            }
+        });
 
-            console.log(`Aplicación Recibo Trébol iniciada. ID de Transacción Inicial: ${currentTransactionId}`);
-        };
-
+        // Formatear monto mientras se escribe
+        document.getElementById('monto').addEventListener('input', function(e) {
+            let value = e.target.value;
+            if (value && !isNaN(value)) {
+                const monto = parseFloat(value).toLocaleString('es-BO', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                document.getElementById('previewMonto').textContent = `Bs ${monto}`;
+                document.getElementById('previewMontoLetras').textContent = formatearMonto(value);
+            }
+        });
     </script>
 </body>
 </html>
